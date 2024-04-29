@@ -1,0 +1,68 @@
+import { App } from "vue";
+import {
+  IconFile,
+  IconFolderAdd,
+  IconDelete,
+  IconEdit,
+  IconDoubleDown,
+  IconDoubleUp,
+  IconRecord,
+  IconDown,
+  IconFolder,
+  IconMore,
+  IconShareExternal,
+  IconLock,
+  IconInfoCircle,
+  IconExport,
+  IconSettings,
+  IconCode,
+  IconSearch,
+  IconRightCircle,
+  IconLeftCircle,
+  IconCopy,
+  IconImport,
+  IconRefresh,
+  IconSave,
+  IconPlayArrow,
+  IconPause,
+  IconPlus,
+  IconRobotAdd,
+  IconRobot,
+} from "@arco-design/web-vue/es/icon";
+
+const icons = [
+  IconFile,
+  IconFolderAdd,
+  IconDelete,
+  IconEdit,
+  IconDoubleDown,
+  IconDoubleUp,
+  IconRecord,
+  IconDown,
+  IconFolder,
+  IconMore,
+  IconShareExternal,
+  IconLock,
+  IconInfoCircle,
+  IconExport,
+  IconSettings,
+  IconCode,
+  IconSearch,
+  IconRightCircle,
+  IconLeftCircle,
+  IconCopy,
+  IconImport,
+  IconRefresh,
+  IconSave,
+  IconPlayArrow,
+  IconPause,
+  IconPlus,
+  IconRobotAdd,
+  IconRobot,
+];
+
+export function registerIcon(app: App) {
+  for (const icon of icons) {
+    app.component(icon.name as string, icon);
+  }
+}

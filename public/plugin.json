@@ -1,0 +1,20 @@
+{
+  "pluginName": "红白机",
+  "description": "红白机模拟器",
+  "author": "Swifly",
+  "main": "index.html",
+  "preload": "preload.js",
+  "development": {
+    "main": "http://localhost:8083/"
+  },
+  "logo": "logo.png",
+  "platform": ["win32", "darwin", "linux"],
+  "pluginSetting": { "single": false },
+  "features": [
+    {
+      "code": "红白机",
+      "explain": "打开红白机模拟器",
+      "cmds": ["红白机", "hbj", "nes"]
+    }
+  ]
+}

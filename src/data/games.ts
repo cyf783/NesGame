@@ -514,7 +514,6 @@ export const GAME_LIST = {
     ["黑白棋 (v1.0) (简)","https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/黑白棋 (v1.0) (简)"],
     ["龙之谷 (繁)","https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/龙之谷 (繁)"],
     ["龙珠英雄 (简)","https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/龙珠英雄 (简)"],
-    ["龙魂 (简)","https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/龙魂 (简)"],
-    ["https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/","https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/"],
+    ["龙魂 (简)","https://raw.githubusercontent.com/tomiaa12/nesRoms/main/roms/龙魂 (简)"]
   ]
 }

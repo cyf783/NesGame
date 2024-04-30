@@ -5,7 +5,6 @@ import { GAME_LAST, GAME_RECORD } from "@/utils/constant";
 import { useTreeStore } from "./treeStore";
 import { firstNode } from "@/utils/tree";
 import { GAME_DEFAULT } from "@/data/games";
-import { SaveData } from "nes-vue";
 
 export const useGameStore = defineStore("GameStore", {
   state: () => {

@@ -15,7 +15,19 @@ export const useTreeStore = defineStore("TreeStore", {
   getters: {
     treeData: (state) => {
       if (!state.searchKey) return state.data;
-      return filterNode(state.searchKey, state.data);
+      const res = filterNode(state.searchKey, state.data);
+      const keys: string[] = [];
+      const loop = (fileItem: ITreeItem[]) => {
+        fileItem.forEach((item) => {
+          keys.push(item.key);
+          if (item.children) {
+            loop(item.children);
+          }
+        });
+      };
+      loop(state.data);
+      state.expandedKeys = keys;
+      return res;
     },
     allExpandedKeys: (state) => {
       const keys: string[] = [];
@@ -61,6 +73,9 @@ export const useTreeStore = defineStore("TreeStore", {
         this.data = _treeData;
         this.saveDB();
       }
+    },
+    expandedAll() {
+      this.expandedKeys = this.allExpandedKeys;
     },
     addExpandedKey(key: string) {
       this.expandedKeys = [...this.expandedKeys, key];

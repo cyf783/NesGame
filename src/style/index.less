@@ -45,3 +45,27 @@ body.dark {
   --scrollbar-thumb-hover: #8b8b8b;
   --color-neutral-3:#2b2c2d;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-track-piece {
+  background: var(--bg-color) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-bg-color);
+  border-radius: 5px;
+  border: 0;
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

@@ -21,20 +21,41 @@
               <a-typography-text class="title">
                 {{ gameStore.title }}
               </a-typography-text>
-              <ATooltip mini content="重置" v-show="isElectron">
+              <ATooltip mini :content="'重置<' + controlerStore.getResetKey + '>'" v-show="isElectron">
                 <a-button class="menu-btn" @click="handleReset">
                   <icon-refresh />
                 </a-button>
               </ATooltip>
-              <ATooltip mini :content="gameStore.isPlaying ? '暂停' : '开始'" v-show="isElectron">
+              <ATooltip mini
+                :content="gameStore.isPlaying ? '暂停<' + controlerStore.getPauseKey + '>' : '开始<' + controlerStore.getPauseKey + '>'"
+                v-show="isElectron">
                 <a-button class="menu-btn" @click="handleTogglePlay">
-                  <icon-pause v-if="gameStore.isPlaying"/>
+                  <icon-pause v-if="gameStore.isPlaying" />
                   <icon-play-arrow v-else />
                 </a-button>
               </ATooltip>
-              <ATooltip mini content="保存进度" v-show="isElectron">
+              <ATooltip mini :content="'保存进度<' + controlerStore.getSaveKey + '>'" v-show="isElectron">
                 <a-button class="menu-btn" @click="handleSaveRecord">
                   <icon-save />
+                </a-button>
+              </ATooltip>
+
+              <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]">
+                <ATooltip mini :content="'音量<' + controlerStore.getVolumeKey + '>'" v-show="isElectron">
+                  <a-button class="menu-btn" @click="handleMute">
+                    <icon-mute v-if="mainStore.volume == 0" />
+                    <icon-sound v-else />
+                  </a-button>
+                </ATooltip>
+                <template #content>
+                  <div class="demo-arrow">
+                    <a-slider :style="{ width: '100%' }" v-model="mainStore.volume" @change="mainStore.saveGain" />
+                  </div>
+                </template>
+              </a-trigger>
+              <ATooltip mini :content="'按键配置'" v-show="isElectron">
+                <a-button class="menu-btn" @click="handleKey">
+                  <icon-robot />
                 </a-button>
               </ATooltip>
               <ATooltip mini :content="gameStore.isFeature ? '移除全局关键字' : '添加文档关键字'" v-show="isElectron">
@@ -43,9 +64,9 @@
                   <icon-share-external v-else />
                 </a-button>
               </ATooltip>
-              <ATooltip mini content="设置" v-show="isElectron">
-                <a-button class="menu-btn" @click="handleSettingsDrawer">
-                  <icon-settings />
+              <ATooltip mini content="存档" v-show="isElectron">
+                <a-button class="menu-btn" @click="handleRecordDrawer">
+                  <icon-history />
                 </a-button>
               </ATooltip>
             </div>
@@ -69,26 +90,26 @@
 <script setup lang="ts">
 import { Drawer, Message } from '@arco-design/web-vue';
 import { IconMenuFold, IconMenuUnfold } from '@arco-design/web-vue/es/icon'
-import { useGameStore, useMainStore, useTreeStore } from '@/store'
+import { useControlerStore, useGameStore, useMainStore, useTreeStore } from '@/store'
 import SideBar from '@/components/SideBar.vue'
-import Settings from '@/components/Settings.vue'
+import Record from '@/components/Record.vue'
 import { isElectron, removeFeature, setFeature } from '@/utils'
 import { $emit, useEventBus } from '@/hooks/useEventBus';
 import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, SIDE_BAR_WIDTH, ENTER_GAME } from '@/common/symbol';
 import { findNodeByKey } from '@/utils/tree';
+import Key from '@/components/Key.vue';
 
 
 const mainStore = useMainStore()
 const gameStore = useGameStore();
 const treeStore = useTreeStore();
+const controlerStore = useControlerStore()// 控制器映射 pinia
 const sideBarCollapsed = ref(false)
 const splitSizeRef = ref<string | number>('220')
 let lastSplitSize = splitSizeRef.value
 
-
-
 watch(() => splitSizeRef.value, (newVal, oldVal) => {
-  const s = (newVal+"").replace('px',"")
+  const s = (newVal + "").replace('px', "")
   $emit(SIDE_BAR_WIDTH, parseInt(s));
 })
 
@@ -109,12 +130,12 @@ function handleSideBarCollapse() {
   }
 }
 /**
- * 打开设置
+ * 打开存档
  */
-function handleSettingsDrawer() {
+function handleRecordDrawer() {
   Drawer.open({
-    title: '设置',
-    content: () => (h(Settings)),
+    title: `存档【${gameStore.title}】`,
+    content: () => (h(Record)),
     width: 340,
     footer: false
   });
@@ -128,8 +149,18 @@ function handleTogglePlay() {
 function handleSaveRecord() {
   $emit(GAME_SAVE_RECORD);
 }
+function handleMute() {
+  mainStore.mute();
+}
 
-
+function handleKey() {
+  Drawer.open({
+    title: `按键配置`,
+    content: () => (h(Key)),
+    width: 340,
+    footer: false
+  });
+}
 
 onMounted(() => {
   init()
@@ -171,6 +202,14 @@ function handleFeatureClick() {
 </script>
 
 <style lang="less" scoped>
+.demo-arrow {
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  width: 200px;
+  background-color: var(--color-bg-popup);
+  border-radius: 4px;
+}
+
 .editor {
   border-top: 1px solid var(--line-color);
   height: 100%;

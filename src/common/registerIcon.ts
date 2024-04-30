@@ -28,6 +28,9 @@ import {
   IconPlus,
   IconRobotAdd,
   IconRobot,
+  IconSound,
+  IconMute,
+  IconHistory,
 } from "@arco-design/web-vue/es/icon";
 
 const icons = [
@@ -59,6 +62,9 @@ const icons = [
   IconPlus,
   IconRobotAdd,
   IconRobot,
+  IconSound,
+  IconMute,
+  IconHistory,
 ];
 
 export function registerIcon(app: App) {

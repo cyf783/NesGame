@@ -259,30 +259,6 @@ const handleDblclick = (evt: any) => {
   align-self: flex-start;
   overflow: auto;
 
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: var(--bg-color);
-  }
-
-  &::-webkit-scrollbar-track-piece {
-    background: var(--bg-color) !important;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--text-bg-color);
-    border-radius: 5px;
-    border: 0;
-
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-  }
-
   :deep(.arco-tree-node-title) {
     font-size: 13px;
   }

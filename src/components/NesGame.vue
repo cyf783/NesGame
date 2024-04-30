@@ -1,20 +1,22 @@
 <template>
   <div class="game-main">
     <NesVue ref="nes" :url="gameUrl" label="开始游戏" :width="screenSize.width" :height="screenSize.height" class="game-nes"
-      :gain="mainStore.volume" :auto-start="true" @error="onError" @success="onSuccess" />
+      :p1="controlerStore.p1" :p2="controlerStore.p2" :gain="mainStore.volume" :auto-start="true" @error="onError"
+      @success="onSuccess" />
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import { EmitErrorObj, NesVue } from 'nes-vue';
 import { useInstance } from '@/utils';
-import { useGameStore, useMainStore } from '@/store';
+import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
-import { useEventBus } from '@/hooks/useEventBus';
+import { $emit, useEventBus } from '@/hooks/useEventBus';
 import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH } from '@/common/symbol';
 
 const gameStore = useGameStore()
 const mainStore = useMainStore()
+const controlerStore = useControlerStore()// 控制器映射 pinia
 const nes = useInstance<typeof NesVue>()
 const gameUrl = ref<string>(gameStore.path)
 const sideBarWidth = ref(220)
@@ -106,8 +108,36 @@ function cheatCode() {
 function disableCheatCode() {
   nes.value.cancelCheatCode('079F-01-01')
 }
+
+
+function systemControlEvent(e: KeyboardEvent) {
+  switch (e.code) {
+    case controlerStore.p0.SAVE:
+      $emit(GAME_SAVE_RECORD);
+      break
+    case controlerStore.p0.PAUSE:
+      $emit(GAME_TOGGLE_PLAY);
+      break
+    case controlerStore.p0.RESET:
+      $emit(GAME_RESET);
+      break
+    case controlerStore.p0.MUTE:
+      mainStore.mute()
+      break
+    default:
+      break
+  }
+}
+
+
 onMounted(() => {
   window.addEventListener('resize', initScreenSize)
+  document.addEventListener('keypress', systemControlEvent)
+  initScreenSize()
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', initScreenSize)
+  document.removeEventListener('keypress', systemControlEvent)
 })
 // 初始化游戏画面大小
 function initScreenSize() {
@@ -122,9 +152,6 @@ function initScreenSize() {
   screenSize.width = width + 'px'
   screenSize.height = height + 'px'
 }
-onMounted(() => {
-  initScreenSize()
-});
 </script>
 <style lang="less" scoped>
 .game-main {

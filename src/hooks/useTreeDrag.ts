@@ -1,6 +1,4 @@
 import { ITreeItem } from "@/types";
-import { join } from "@/preload";
-import { Message } from "@arco-design/web-vue";
 import { useTreeStore } from "@/store";
 const treeStore = useTreeStore();
 

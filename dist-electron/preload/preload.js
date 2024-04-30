@@ -1,17 +1,5 @@
 "use strict";
-const { resolve, basename, extname } = require("path");
-const { readFileSync, statSync, writeFileSync, mkdirSync } = require("fs");
 const { createHash } = require("crypto");
-const { Buffer } = require("buffer");
 window.preload = {
-  resolve,
-  basename,
-  extname,
-  readFileSync,
-  statSync,
-  writeFileSync,
-  mkdirSync,
   createHash,
-  Buffer
 };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHJlbG9hZC5qcyIsInNvdXJjZXMiOlsiLi4vLi4vcHVibGljL3ByZWxvYWQuanMiXSwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgeyByZXNvbHZlLCBiYXNlbmFtZSwgZXh0bmFtZSB9ID0gcmVxdWlyZSgncGF0aCcpXHJcbmNvbnN0IHsgcmVhZEZpbGVTeW5jLCBzdGF0U3luYywgd3JpdGVGaWxlU3luYywgbWtkaXJTeW5jIH0gPSByZXF1aXJlKCdmcycpXHJcbmNvbnN0IHsgY3JlYXRlSGFzaCB9ID0gcmVxdWlyZSgnY3J5cHRvJylcclxuY29uc3QgeyBCdWZmZXIgfSA9IHJlcXVpcmUoJ2J1ZmZlcicpXHJcblxyXG53aW5kb3cucHJlbG9hZCA9IHtcclxuICByZXNvbHZlLFxyXG4gIGJhc2VuYW1lLFxyXG4gIGV4dG5hbWUsXHJcbiAgcmVhZEZpbGVTeW5jLFxyXG4gIHN0YXRTeW5jLFxyXG4gIHdyaXRlRmlsZVN5bmMsXHJcbiAgbWtkaXJTeW5jLFxyXG4gIGNyZWF0ZUhhc2gsXHJcbiAgQnVmZmVyXHJcbn1cclxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQSxNQUFNLEVBQUUsU0FBUyxVQUFVLFFBQU8sSUFBSyxRQUFRLE1BQU07QUFDckQsTUFBTSxFQUFFLGNBQWMsVUFBVSxlQUFlLFVBQVcsSUFBRyxRQUFRLElBQUk7QUFDekUsTUFBTSxFQUFFLFdBQVUsSUFBSyxRQUFRLFFBQVE7QUFDdkMsTUFBTSxFQUFFLE9BQU0sSUFBSyxRQUFRLFFBQVE7QUFFbkMsT0FBTyxVQUFVO0FBQUEsRUFDZjtBQUFBLEVBQ0E7QUFBQSxFQUNBO0FBQUEsRUFDQTtBQUFBLEVBQ0E7QUFBQSxFQUNBO0FBQUEsRUFDQTtBQUFBLEVBQ0E7QUFBQSxFQUNBO0FBQ0Y7In0=

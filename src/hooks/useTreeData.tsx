@@ -2,14 +2,10 @@ import { Message, Modal, Input } from "@arco-design/web-vue";
 import { ITreeItem } from "@/types";
 import { $emit } from "@/hooks/useEventBus";
 import { REMOVE_FEATURE } from "@/common/symbol";
-import { join } from "@/preload";
 import { createKey, findParent } from "@/utils/tree";
-import { useGameStore, useTreeStore } from "@/store";
+import { useTreeStore } from "@/store";
 
-const DEFAULT_FILE_NAME = "默认游戏";
-const DEFAULT_FOLDER_NAME = "新建分类";
 const treeStore = useTreeStore();
-const gameStore = useGameStore();
 
 export function useTreeData() {
   function preCheck() {

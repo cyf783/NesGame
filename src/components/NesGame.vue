@@ -100,6 +100,7 @@ function onSuccess() {
 function onError(error: EmitErrorObj) {
   console.error(error.message)
   Message.error(error.message);
+  gameStore.loading = false;
 }
 
 function cheatCode() {

@@ -1271,25 +1271,25 @@ Jt.prototype = {
   renderBgScanline: function(t, i) {
     var s = this.regS === 0 ? 0 : 256, e = (i << 8) - this.regFH;
     if (this.curNt = this.ntable1[this.cntV + this.cntV + this.cntH], this.cntHT = this.regHT, this.cntH = this.regH, this.curNt = this.ntable1[this.cntV + this.cntV + this.cntH], i < 240 && i - this.cntFV >= 0) {
-      for (var r = this.cntFV << 3, a = this.scantile, n = this.attrib, h = this.ptTile, l = this.nameTable, f = this.imgPalette, R = this.pixrendered, c = t ? this.bgbuffer : this.buffer, m, F, E, y, S = 0; S < 32; S++) {
+      for (var r = this.cntFV << 3, a = this.scantile, n = this.attrib, h = this.ptTile, l = this.nameTable, f = this.imgPalette, R = this.pixrendered, c = t ? this.bgbuffer : this.buffer, m, M, E, P, S = 0; S < 32; S++) {
         if (i >= 0) {
           if (this.validTileData) {
             if (m = a[S], typeof m > "u")
               continue;
-            F = m.pix, E = n[S];
+            M = m.pix, E = n[S];
           } else {
             if (m = h[s + l[this.curNt].getTileIndex(this.cntHT, this.cntVT)], typeof m > "u")
               continue;
-            F = m.pix, E = l[this.curNt].getAttrib(this.cntHT, this.cntVT), a[S] = m, n[S] = E;
+            M = m.pix, E = l[this.curNt].getAttrib(this.cntHT, this.cntVT), a[S] = m, n[S] = E;
           }
           var g = 0, T = (S << 3) - this.regFH;
           if (T > -8)
             if (T < 0 && (e -= T, g = -T), m.opaque[this.cntFV])
               for (; g < 8; g++)
-                c[e] = f[F[r + g] + E], R[e] |= 256, e++;
+                c[e] = f[M[r + g] + E], R[e] |= 256, e++;
             else
               for (; g < 8; g++)
-                y = F[r + g], y !== 0 && (c[e] = f[y + E], R[e] |= 256), e++;
+                P = M[r + g], P !== 0 && (c[e] = f[P + E], R[e] |= 256), e++;
         }
         ++this.cntHT === 32 && (this.cntHT = 0, this.cntH++, this.cntH %= 2, this.curNt = this.ntable1[(this.cntV << 1) + this.cntH]);
       }
@@ -1922,7 +1922,7 @@ ii.prototype = {
     this.sampleCondition = this.isEnabled && this.progTimerMax > 7 && this.linearCounter > 0 && this.lengthCounter > 0;
   }
 };
-var Ui = jt, M = ct, o = {};
+var Ui = jt, y = ct, o = {};
 o[0] = function(t) {
   this.nes = t;
 };
@@ -2101,11 +2101,11 @@ o[0].prototype = {
   loadBatteryRam: function() {
     if (this.nes.rom.batteryRam) {
       var t = this.nes.rom.batteryRam;
-      t !== null && t.length === 8192 && M.copyArrayElements(t, 0, this.nes.cpu.mem, 24576, 8192);
+      t !== null && t.length === 8192 && y.copyArrayElements(t, 0, this.nes.cpu.mem, 24576, 8192);
     }
   },
   loadRomBank: function(t, i) {
-    t %= this.nes.rom.romCount, M.copyArrayElements(
+    t %= this.nes.rom.romCount, y.copyArrayElements(
       this.nes.rom.rom[t],
       0,
       this.nes.cpu.mem,
@@ -2115,7 +2115,7 @@ o[0].prototype = {
   },
   loadVromBank: function(t, i) {
     if (this.nes.rom.vromCount !== 0) {
-      this.nes.ppu.triggerRendering(), M.copyArrayElements(
+      this.nes.ppu.triggerRendering(), y.copyArrayElements(
         this.nes.rom.vrom[t % this.nes.rom.vromCount],
         0,
         this.nes.ppu.vramMem,
@@ -2123,7 +2123,7 @@ o[0].prototype = {
         4096
       );
       var s = this.nes.rom.vromTile[t % this.nes.rom.vromCount];
-      M.copyArrayElements(
+      y.copyArrayElements(
         s,
         0,
         this.nes.ppu.ptTile,
@@ -2145,7 +2145,7 @@ o[0].prototype = {
     if (this.nes.rom.vromCount !== 0) {
       this.nes.ppu.triggerRendering();
       var s = Math.floor(t / 4) % this.nes.rom.vromCount, e = t % 4 * 1024;
-      M.copyArrayElements(
+      y.copyArrayElements(
         this.nes.rom.vrom[s],
         e,
         this.nes.ppu.vramMem,
@@ -2160,7 +2160,7 @@ o[0].prototype = {
     if (this.nes.rom.vromCount !== 0) {
       this.nes.ppu.triggerRendering();
       var s = Math.floor(t / 2) % this.nes.rom.vromCount, e = t % 2 * 2048;
-      M.copyArrayElements(
+      y.copyArrayElements(
         this.nes.rom.vrom[s],
         e,
         this.nes.ppu.vramMem,
@@ -2173,7 +2173,7 @@ o[0].prototype = {
   },
   load8kRomBank: function(t, i) {
     var s = Math.floor(t / 2) % this.nes.rom.romCount, e = t % 2 * 8192;
-    M.copyArrayElements(
+    y.copyArrayElements(
       this.nes.rom.rom[s],
       e,
       this.nes.cpu.mem,
@@ -2864,14 +2864,14 @@ const Q = class {
 };
 let U = Q;
 x(U, "reg", /([\da-fA-F]{4})-([0-3])([0-4])-([\da-fA-F]{2,8})/);
-const v = new U(), it = 256, et = 240;
+const k = new U(), it = 256, et = 240;
 let K, hi, ri, J;
 const ut = new ImageData(it, et);
 function le(t) {
   p.frameCounter++;
   for (let i = 0; i < 256 * 240; i += 1)
     ri[i] = 4278190080 | t[i];
-  v.onFrame();
+  k.onFrame();
 }
 function ue() {
   ut.data.set(hi), J.putImageData(ut, 0, 0);
@@ -3031,7 +3031,7 @@ class Re {
   }
 }
 const z = new Re();
-let O = new AudioContext(), k, pt = 1;
+let F = new AudioContext(), O, pt = 1;
 const vt = 512, mt = 4 * 1024, j = mt - 1, ni = new Float32Array(mt), ai = new Float32Array(mt);
 let q = 0, $ = 0;
 function xe() {
@@ -3047,7 +3047,7 @@ function Se() {
   return t.close(), i;
 }
 function ge() {
-  O = new AudioContext(), k = O.createScriptProcessor(vt, 0, 2), k.onaudioprocess = (t) => {
+  F = new AudioContext(), O = F.createScriptProcessor(vt, 0, 2), O.onaudioprocess = (t) => {
     const i = t.outputBuffer, s = i.length;
     xe() < vt && me();
     const e = i.getChannelData(0), r = i.getChannelData(1);
@@ -3056,16 +3056,19 @@ function ge() {
       e[a] = ni[n] * pt, r[a] = ai[n] * pt;
     }
     $ = $ + s & j;
-  }, k.connect(O.destination);
+  }, O.connect(F.destination);
 }
 function kt() {
-  k.disconnect(O.destination), k.onaudioprocess = null, k = {}, "close" in O && O.close();
+  try {
+    O && O.disconnect && (O.disconnect(F.destination), O.onaudioprocess = null, O = {}, "close" in F && F.close());
+  } catch {
+  }
 }
 function Ae() {
-  O.suspend();
+  F.suspend();
 }
 function Ce() {
-  O.resume();
+  F.resume();
 }
 function Lt(t) {
   pt = ft(t, 0, 100) / 100;
@@ -3254,14 +3257,14 @@ const Ie = () => qt(), Ne = ["width", "height"], Ee = { style: { position: "abso
     function m(u) {
       a(u.code, 65);
     }
-    function F(u) {
+    function M(u) {
       a(u.code, 64);
     }
     function E() {
-      document.addEventListener("keydown", m), document.addEventListener("keyup", F);
+      document.addEventListener("keydown", m), document.addEventListener("keyup", M);
     }
-    function y() {
-      document.removeEventListener("keydown", m), document.removeEventListener("keyup", F);
+    function P() {
+      document.removeEventListener("keydown", m), document.removeEventListener("keyup", M);
     }
     function S(u = e.url) {
       if (tt(n.value))
@@ -3306,10 +3309,10 @@ const Ie = () => qt(), Ne = ["width", "height"], Ee = { style: { position: "abso
       }, (d) => (c(d), d));
     }
     function g() {
-      p.videoMode && xt(), h.value || T(), f && (f = !1), v.init(), e.url && S();
+      p.videoMode && xt(), h.value || T(), f && (f = !1), k.init(), e.url && S();
     }
     function T() {
-      h.value || (kt(), Ft(), clearInterval(R), p.reset(), v.init(), h.value = !0);
+      h.value || (kt(), Ft(), clearInterval(R), p.reset(), k.init(), h.value = !0);
     }
     function st(u) {
       return u === void 0 ? c({
@@ -3393,7 +3396,7 @@ const Ie = () => qt(), Ne = ["width", "height"], Ee = { style: { position: "abso
         });
         return;
       }
-      g(), p.videoMode = !0, y();
+      g(), p.videoMode = !0, P();
     }
     async function _i(u, _ = 0) {
       try {
@@ -3414,13 +3417,13 @@ const Ie = () => qt(), Ne = ["width", "height"], Ee = { style: { position: "abso
       return yt(u, _), Promise.resolve(rt);
     }
     function xi(u) {
-      v.parse(u);
+      k.parse(u);
     }
     function di(u) {
-      v.disable(u);
+      k.disable(u);
     }
     function Si() {
-      v.init();
+      k.init();
     }
     function gi() {
       f = !0, Ae();
@@ -3445,7 +3448,7 @@ const Ie = () => qt(), Ne = ["width", "height"], Ee = { style: { position: "abso
     ), Gt(() => {
       N.buffer = null, e.autoStart && S(), Lt(e.gain);
     }), Vt(() => {
-      y(), T();
+      P(), T();
     }), i({
       start: S,
       reset: g,
@@ -3487,7 +3490,7 @@ const Ie = () => qt(), Ne = ["width", "height"], Ee = { style: { position: "abso
     ], 4));
   }
 }), D = {};
-function P(t, i, s, e, r) {
+function v(t, i, s, e, r) {
   t.addEventListener(s, e, r), D[i] = D[i] || {}, D[i][s] = D[i][s] || [], D[i][s].push(e);
 }
 function Oe(t, i) {
@@ -3510,27 +3513,27 @@ const Pe = (t, i) => {
     Oe(t, f);
   }
   const a = Bt(i.value).filter((l) => bt(l, r)), n = `gamepad-${`${s + (e ? "p2" : "p1")}-${a.join("-")}`}`;
-  a.length && (s === "touch" ? (P(t, n, "touchstart", () => {
+  a.length && (s === "touch" ? (v(t, n, "touchstart", () => {
     a.forEach((l) => {
       A(r[l], 65);
     });
-  }), P(t, n, "touchend", () => {
+  }), v(t, n, "touchend", () => {
     a.forEach((l) => {
       A(r[l], 64);
     });
-  }), P(t, n, "touchcancel", () => {
+  }), v(t, n, "touchcancel", () => {
     a.forEach((l) => {
       A(r[l], 64);
     });
-  })) : (P(t, n, "mousedown", () => {
+  })) : (v(t, n, "mousedown", () => {
     a.forEach((l) => {
       A(r[l], 65);
     });
-  }), P(t, n, "mouseup", () => {
+  }), v(t, n, "mouseup", () => {
     a.forEach((l) => {
       A(r[l], 64);
     });
-  }), P(t, n, "mouseleave", () => {
+  }), v(t, n, "mouseleave", () => {
     a.forEach((l) => {
       A(r[l], 64);
     });

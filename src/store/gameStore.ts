@@ -51,6 +51,9 @@ export const useGameStore = defineStore("GameStore", {
       }
     },
     loadGame(game: ITreeItem) {
+      if(game.key==this.id){
+        return;
+      }
       const _r = getItem(GAME_RECORD + game.key);
       this.$patch({
         id: game.key,

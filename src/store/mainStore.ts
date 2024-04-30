@@ -27,7 +27,6 @@ export const useMainStore = defineStore("MainStore", {
       const controlerStore = useControlerStore();
       controlerStore.init();
       this.isReady = true;
-
     },
     reset() {
       removeItem(GAME_LAST);

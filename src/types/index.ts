@@ -24,4 +24,5 @@ export interface IGameRuntimeExtend extends IGame {
   isFeature: boolean;
   records:IGameRecord[];
   isPlaying:boolean;
+  loading:boolean;
 }

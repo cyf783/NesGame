@@ -12,6 +12,7 @@ export const useGameStore = defineStore("GameStore", {
       isEmpty: true,
       isFeature: false,
       isPlaying: false,
+      loading: true,
 
       id: GAME_DEFAULT.id,
       title: GAME_DEFAULT.title,
@@ -63,6 +64,7 @@ export const useGameStore = defineStore("GameStore", {
         const r = features.filter((f) => f.code === this.featureKey);
         this.isFeature = r.length > 0;
       }
+      this.loading = true
     },
     saveRecord(data: string, img: string) {
       this.records.push({

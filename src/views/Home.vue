@@ -73,12 +73,11 @@
           </a-layout-header>
           <a-layout>
             <a-layout-content>
-              <nes-game v-if="mainStore.isReady"></nes-game>
-
-              <div class="tips" v-if="!mainStore.isReady">
+              <div class="tips" v-if="!mainStore.isReady || gameStore.loading">
                 <a-spin></a-spin>
-                <span>模拟器加载中...</span>
+                <span>游戏加载中...</span>
               </div>
+              <nes-game v-if="mainStore.isReady"></nes-game>
             </a-layout-content>
           </a-layout>
         </a-layout>
@@ -273,6 +272,7 @@ function handleFeatureClick() {
   align-items: center;
   color: #999;
   font-size: 1.2rem;
+  background: #000;
 
   &>span {
     margin-left: 0.5rem;

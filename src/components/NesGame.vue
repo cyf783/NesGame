@@ -93,6 +93,7 @@ useEventBus(GAME_RESET, () => {
 
 function onSuccess() {
   gameStore.isPlaying = true;
+  gameStore.loading = false;
 }
 
 

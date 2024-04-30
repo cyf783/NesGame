@@ -1,7 +1,7 @@
 import { $emit } from "@/hooks/useEventBus";
 import {
   ENTER_GAME,
-  GAME_TOGGLE_PLAY,
+  GAME_STOP,
   SESRCH_KEY,
 } from "@/common/symbol";
 import { isElectron } from "@/utils";
@@ -20,8 +20,8 @@ export function registerCallback() {
     utools.setSubInput(search, "搜索...");
   });
   utools.onPluginOut((processExit) => {
-    $emit(GAME_TOGGLE_PLAY, "pause");
-  })
+    $emit(GAME_STOP);
+  });
 }
 
 function search(obj: any) {

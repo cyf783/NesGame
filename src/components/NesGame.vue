@@ -12,7 +12,7 @@ import { useInstance } from '@/utils';
 import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
-import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH } from '@/common/symbol';
+import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH, GAME_STOP } from '@/common/symbol';
 
 const gameStore = useGameStore()
 const mainStore = useMainStore()
@@ -43,6 +43,10 @@ useEventBus(GAME_LOAD_RECORD, (id: string) => {
 useEventBus(SIDE_BAR_WIDTH, (width: number) => {
   sideBarWidth.value = width;
   initScreenSize()
+})
+
+useEventBus(GAME_STOP, (type: string) => {
+  nes.value.stop()
 })
 
 useEventBus(GAME_TOGGLE_PLAY, (type: string) => {

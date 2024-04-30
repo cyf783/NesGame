@@ -1,6 +1,9 @@
 <template>
   <div class="editor">
-    <a-split min="220" max="0.5" v-model:size="splitSizeRef" :style="{
+    <div class="home-tips" v-if="!mainStore.isDetach">
+      <span>注:需要先点击右上角选择分离为独立窗口(或者按ctr1+d)后再进行游戏</span>
+    </div>
+    <a-split v-if="mainStore.isDetach" min="220" max="0.5" v-model:size="splitSizeRef" :style="{
       height: '100vh',
       width: '100%',
     }">
@@ -261,6 +264,21 @@ function handleFeatureClick() {
     }
 
     background-color: var(--c-bg-color);
+  }
+}
+
+.home-tips {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 1.2rem;
+  background: #000;
+
+  &>span {
+    margin-left: 0.5rem;
   }
 }
 

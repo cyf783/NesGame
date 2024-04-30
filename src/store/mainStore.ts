@@ -9,7 +9,8 @@ export const useMainStore = defineStore("MainStore", {
   state: () => ({
     volume: 80,
     lastVolume: 80,
-    isReady:false
+    isReady:false,
+    isDetach:false
   }),
   actions: {
     init() {

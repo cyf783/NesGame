@@ -19,6 +19,10 @@ export function registerCallback() {
     // 调用输入框
     utools.setSubInput(search, "搜索...");
   });
+  utools.onPluginDetach(() => {
+    const store = useMainStore();
+    store.isDetach = true;
+  })
   utools.onPluginOut((processExit) => {
     $emit(GAME_STOP);
   });

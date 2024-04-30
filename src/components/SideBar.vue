@@ -128,7 +128,7 @@ watch(() => treeStore.selected, (newVal, oldVal) => {
   // 选中的节点是文件
   if (newVal && !newVal.children) {
     gameStore.loadGame(newVal)
-    // 从当前文档向上找到所有父节点 并展开
+    // 从当前游戏向上找到所有父节点 并展开
     const keys = collectAllParentKeys(newVal.key, treeStore.data)
     for (let index = 0; index < keys.length; index++) {
       const key = keys[index];

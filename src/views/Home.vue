@@ -58,7 +58,7 @@
                   <icon-robot />
                 </a-button>
               </ATooltip>
-              <ATooltip mini :content="gameStore.isFeature ? '移除全局关键字' : '添加文档关键字'" v-show="isElectron">
+              <ATooltip mini :content="gameStore.isFeature ? '移除全局关键字' : '添加游戏关键字'" v-show="isElectron">
                 <a-button class="menu-btn" @click="handleFeatureClick">
                   <icon-share-external v-if="gameStore.isFeature" :style="{ color: '#1a73e8' }" />
                   <icon-share-external v-else />

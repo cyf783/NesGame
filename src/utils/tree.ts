@@ -103,7 +103,7 @@ export function firstNode(files: ITreeItem[]): ITreeItem | null {
 
 
 /**
- * 生成文档key
+ * 生成游戏key
  * @param txt
  * @returns
  */

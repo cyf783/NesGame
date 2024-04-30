@@ -11,7 +11,7 @@ export function registerCallback() {
   if (!isElectron) return;
 
   utools.onPluginEnter(({ code, type, payload }) => {
-    // 通过全局关键字打开文档
+    // 通过全局关键字打开游戏
     if (code.startsWith("game/")) {
       const docId = code.split("/")[1];
       emitWithWatch(ENTER_GAME, docId);

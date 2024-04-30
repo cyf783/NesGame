@@ -6,7 +6,7 @@ import { join } from "@/preload";
 import { createKey, findParent } from "@/utils/tree";
 import { useGameStore, useTreeStore } from "@/store";
 
-const DEFAULT_FILE_NAME = "默认文档";
+const DEFAULT_FILE_NAME = "默认游戏";
 const DEFAULT_FOLDER_NAME = "新建分类";
 const treeStore = useTreeStore();
 const gameStore = useGameStore();
@@ -14,7 +14,7 @@ const gameStore = useGameStore();
 export function useTreeData() {
   function preCheck() {
     if (!treeStore.selected) {
-      Message.error("请先选择一个文档或分类");
+      Message.error("请先选择一个游戏或分类");
       return false;
     }
     return true;
@@ -324,7 +324,7 @@ export function useTreeData() {
     );
 
     Modal.confirm({
-      title: `重命名${node.children ? "分类" : "文档"}：【${node.title}】`,
+      title: `重命名${node.children ? "分类" : "游戏"}：【${node.title}】`,
       cancelText: "取消",
       content: () => InputInstance,
       onBeforeOk: (done) => {

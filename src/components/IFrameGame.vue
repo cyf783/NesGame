@@ -126,6 +126,18 @@ const game_pause = () => {
   }
 }
 
+const game_mute = () => {
+  if (iframeWindow.value) {
+    if (iframeWindow.value.window.EJS_emulator.muted) {
+      iframeWindow.value.window.EJS_emulator.setVolume(0.8);
+      iframeWindow.value.window.EJS_emulator.muted=false;
+    } else {
+      iframeWindow.value.window.EJS_emulator.setVolume(0);
+      iframeWindow.value.window.EJS_emulator.muted=true;
+    }
+  }
+}
+
 const onIframeLoaded = (event: any) => {
   iframeWindow.value = event.target.contentWindow;
 }
@@ -142,7 +154,7 @@ function systemControlEvent(e: KeyboardEvent) {
       $emit(GAME_RESET);
       break
     case controlerStore.p0.MUTE:
-      mainStore.mute()
+      game_mute()
       break
     default:
       break
@@ -166,7 +178,7 @@ onMounted(() => {
           $emit(GAME_RESET);
           break
         case controlerStore.p0.MUTE:
-          mainStore.mute()
+          game_mute()
           break
         default:
           break

@@ -124,6 +124,8 @@ watch(() => splitSizeRef.value, (newVal, oldVal) => {
 
 watch(() => mainStore.core, (newVal, oldVal) => {
   if (newVal) {
+    gameStore.isPlaying = false;
+    gameStore.loading = true;
     mainStore.saveCore()
   }
 })

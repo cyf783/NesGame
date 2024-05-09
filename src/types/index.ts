@@ -16,13 +16,14 @@ export interface IGameRecord {
   img: string;
   title: string;
   data: string;
+  core: string;
 }
 
 // 运行时接口定义
 export interface IGameRuntimeExtend extends IGame {
   isEmpty: boolean;
   isFeature: boolean;
-  records:IGameRecord[];
-  isPlaying:boolean;
-  loading:boolean;
+  records: IGameRecord[];
+  isPlaying: boolean;
+  loading: boolean;
 }

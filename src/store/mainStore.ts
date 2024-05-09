@@ -2,18 +2,29 @@ import { defineStore } from "pinia";
 import { useTreeStore } from "./treeStore";
 import { useGameStore } from "./gameStore";
 import { getItem, removeItem, setItem } from "@/utils";
-import { GAME_TREE_DATA, GAME_LAST, GAME_VOLUME } from "@/utils/constant";
+import { GAME_TREE_DATA, GAME_LAST, GAME_VOLUME, GAME_CORE_EMULATOR_JS, GAME_CORE_JSNES, GAME_CORE } from "@/utils/constant";
 import { useControlerStore } from "./controlerStore";
 
 export const useMainStore = defineStore("MainStore", {
   state: () => ({
+    core: GAME_CORE_EMULATOR_JS,
     volume: 80,
     lastVolume: 80,
     isReady:false,
     isDetach:false
   }),
+  getters: {
+    isJsnes: (state) => {
+      return state.core == GAME_CORE_JSNES;
+    },
+    isEmulatorJS: (state) => {
+      return state.core == GAME_CORE_EMULATOR_JS;
+    },
+  },
   actions: {
     init() {
+      const c =  getItem(GAME_CORE)
+      this.core = c?c:GAME_CORE_EMULATOR_JS
       const v =  getItem(GAME_VOLUME)
       this.volume = v==0||v?v:80;
       const treeStore = useTreeStore();
@@ -45,6 +56,9 @@ export const useMainStore = defineStore("MainStore", {
     },
     saveGain(){
       setItem(GAME_VOLUME,this.volume);
+    },
+    saveCore(){
+      setItem(GAME_CORE,this.core);
     }
   },
 });

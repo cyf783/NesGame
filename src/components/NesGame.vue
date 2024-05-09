@@ -12,7 +12,9 @@ import { useInstance } from '@/utils';
 import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
-import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH, GAME_STOP } from '@/common/symbol';
+import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH } from '@/common/symbol';
+import { GAME_CORE_JSNES } from '@/utils/constant';
+import { IGameRecord } from '@/types';
 
 const gameStore = useGameStore()
 const mainStore = useMainStore()
@@ -32,9 +34,8 @@ watch(() => gameStore.path, (newVal, oldVal) => {
   }
 })
 
-useEventBus(GAME_LOAD_RECORD, (id: string) => {
-  const rec = gameStore.loadRecord(id);
-  if (rec) {
+useEventBus(GAME_LOAD_RECORD, (rec: IGameRecord) => {
+  if (rec && rec.data) {
     nes.value.loadGameData(JSON.parse(rec.data))
     Message.success("游戏存档加载成功")
   }
@@ -43,10 +44,6 @@ useEventBus(GAME_LOAD_RECORD, (id: string) => {
 useEventBus(SIDE_BAR_WIDTH, (width: number) => {
   sideBarWidth.value = width;
   initScreenSize()
-})
-
-useEventBus(GAME_STOP, (type: string) => {
-  nes.value.stop()
 })
 
 useEventBus(GAME_TOGGLE_PLAY, (type: string) => {
@@ -85,7 +82,7 @@ useEventBus(GAME_SAVE_RECORD, () => {
     const ctx = cvs.getContext('2d')
     if (ctx) {
       ctx.drawImage(saveImage, 0, 0, cvs.width, cvs.height)
-      gameStore.saveRecord(JSON.stringify(nes.value.getGameData()), cvs.toDataURL('image/png'))
+      gameStore.saveRecord(JSON.stringify(nes.value.getGameData()), cvs.toDataURL('image/png'), GAME_CORE_JSNES)
       Message.success("游戏存档保存成功")
     }
   }

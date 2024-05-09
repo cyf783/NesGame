@@ -1,9 +1,9 @@
 <template>
   <div class="game-record">
-    <div class="header">
+    <div class="header" v-if="mainStore.isJsnes">
       <h3>玩家P1</h3>
     </div>
-    <a-table :data="controlerStore.getP1Key" :pagination="false">
+    <a-table :data="controlerStore.getP1Key" :pagination="false" v-if="mainStore.isJsnes">
       <template #columns>
         <a-table-column title="动作" data-index="action" :width="100"></a-table-column>
         <a-table-column title="键值">
@@ -13,10 +13,10 @@
         </a-table-column>
       </template>
     </a-table>
-    <div class="header">
+    <div class="header" v-if="mainStore.isJsnes">
       <h3>玩家P2</h3>
     </div>
-    <a-table :data="controlerStore.getP2Key" :pagination="false">
+    <a-table :data="controlerStore.getP2Key" :pagination="false" v-if="mainStore.isJsnes">
       <template #columns>
         <a-table-column title="动作" data-index="action" :width="100"></a-table-column>
         <a-table-column title="键值">
@@ -26,8 +26,11 @@
         </a-table-column>
       </template>
     </a-table>
-    <div class="header">
+    <div class="header" v-if="mainStore.isJsnes">
       <h3>其它</h3>
+    </div>
+    <div class="header" v-if="mainStore.isEmulatorJS">
+      <h3>玩家按键请通过引擎界面提供的配置功能</h3>
     </div>
     <a-table :data="controlerStore.getP0Key" :pagination="false">
       <template #columns>
@@ -43,9 +46,10 @@
 </template>
 
 <script setup lang="ts">
-import { useControlerStore } from '@/store';
+import { useControlerStore, useMainStore } from '@/store';
 
 const controlerStore = useControlerStore()// 控制器映射 pinia
+const mainStore = useMainStore()
 
 function handleKeydown(event:any) {
   // 阻止默认行为

@@ -10,6 +10,7 @@
           </template>
         </a-list-item-meta>
         <template #actions>
+          <a-button :status="rec.core=='JSNES'?'normal':'warning'" type="outline" size="mini" disabled>{{rec.core}}</a-button>
           <a-button status="success" size="mini" @click="loadRecord(rec.id)">读取</a-button>
           <a-button status="danger" size="mini" @click="removeRecord(rec.id)">删除</a-button>
         </template>
@@ -21,15 +22,32 @@
 <script setup lang="ts">
 import { GAME_LOAD_RECORD } from '@/common/symbol';
 import { $emit } from '@/hooks/useEventBus';
-import { useGameStore } from '@/store';
+import { useGameStore, useMainStore } from '@/store';
 
 const gameStore = useGameStore()
+const mainStore = useMainStore()
 
 function loadRecord(id: string) {
-  $emit(GAME_LOAD_RECORD, id);
+  const rec = gameStore.loadRecord(id);
+  if (rec) {
+    if (mainStore.core != rec.core) {
+      gameStore.loading = true
+      mainStore.core = rec.core
+    }
+    if (!gameStore.loading) {
+      $emit(GAME_LOAD_RECORD, rec);
+    } else {
+      const cancel = watch(
+        () => gameStore.loading,
+        (val) => {
+          val ? null : $emit(GAME_LOAD_RECORD, rec);
+          cancel();
+        }
+      );
+    }
+  }
 }
 function removeRecord(id: string) {
-  console.log(id)
   gameStore.removeRecords(id);
 }
 

@@ -1,7 +1,6 @@
 import { $emit } from "@/hooks/useEventBus";
 import {
   ENTER_GAME,
-  GAME_STOP,
   SESRCH_KEY,
 } from "@/common/symbol";
 import { isElectron } from "@/utils";
@@ -9,6 +8,10 @@ import { useMainStore } from "@/store";
 
 export function registerCallback() {
   if (!isElectron) return;
+  if (utools.getWindowType() === "detach") {
+    const store = useMainStore();
+    store.isDetach = true;
+  }
 
   utools.onPluginEnter(({ code, type, payload }) => {
     // 通过全局关键字打开游戏
@@ -23,9 +26,6 @@ export function registerCallback() {
     const store = useMainStore();
     store.isDetach = true;
   })
-  utools.onPluginOut((processExit) => {
-    $emit(GAME_STOP);
-  });
 }
 
 function search(obj: any) {

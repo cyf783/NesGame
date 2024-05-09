@@ -3,3 +3,6 @@ export const GAME_TREE_DATA = "game/tree_data";
 export const GAME_VOLUME = "game/volume";
 export const GAME_RECORD = "game/record/";
 export const GAME_CONTROLER = "game/controler";
+export const GAME_CORE = "game/core";
+export const GAME_CORE_JSNES = "JSNES";
+export const GAME_CORE_EMULATOR_JS = "EmulatorJS";

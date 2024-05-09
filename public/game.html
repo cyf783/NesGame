@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1" />
+    <title>Game</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      window.onload = loadROM;
+      function getRom() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("rom");
+      }
+      async function loadROM() {
+        const romLink = getRom();
+        if (romLink) {
+          const parts = romLink.split(".");
+          const extension = parts[parts.length - 1];
+          const core = await getCore(extension);
+
+          if (core) {
+            const div = document.createElement("div");
+            const script = document.createElement("script");
+
+            div.id = "game";
+
+            document.body.appendChild(div);
+
+            window.EJS_language = "zh-CN";
+            window.EJS_player = "#game";
+            window.EJS_gameName = parts.shift();
+            window.EJS_biosUrl = "";
+            window.EJS_gameUrl = romLink;
+            window.EJS_core = core;
+            window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+            window.EJS_startOnLoaded = true;
+            window.EJS_backgroundColor = "#000";
+            window.EJS_Buttons = {
+              quickSave: false,
+              quickLoad: false,
+              contextMenuButton: false,
+              settings: false,
+              saveState: false,
+              loadState: false,
+              saveSavFiles: false,
+              loadSavFiles: false,
+              cacheManager: false,
+              netplay: false,
+            };
+            window.EJS_defaultControls = {
+              0: {
+                8: {
+                  value: "k",
+                  value2: "BUTTON_1",
+                },
+                0: {
+                  value: "j",
+                  value2: "BUTTON_2",
+                },
+                2: {
+                  value: "space",
+                  value2: "SELECT",
+                },
+                3: {
+                  value: "enter",
+                  value2: "START",
+                },
+                4: {
+                  value: "w",
+                  value2: "DPAD_UP",
+                },
+                5: {
+                  value: "s",
+                  value2: "DPAD_DOWN",
+                },
+                6: {
+                  value: "a",
+                  value2: "DPAD_LEFT",
+                },
+                7: {
+                  value: "d",
+                  value2: "DPAD_RIGHT",
+                },
+              },
+              1: {
+                8: {
+                  value: "numpad 5",
+                },
+                0: {
+                  value: "numpad 4",
+                },
+                2: {
+                  value: "space",
+                },
+                3: {
+                  value: "enter",
+                },
+                4: {
+                  value: "up arrow",
+                },
+                5: {
+                  value: "down arrow",
+                },
+                6: {
+                  value: "left arrow",
+                },
+                7: {
+                  value: "right arrow",
+                },
+              },
+              2: {},
+              3: {},
+            };
+
+            window.EJS_onGameStart = () => {
+              window.parent.postMessage(
+                { action: "onStart"},
+                "*"
+              );
+            };
+
+            script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+            document.body.appendChild(script);
+            setTimeout(() => {
+              window.EJS_emulator.addEventListener(
+                window.EJS_emulator.game,
+                "contextmenu",
+                (e) => {
+                  window.EJS_emulator.elements.contextmenu.style.display =
+                    "none";
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return;
+                }
+              );
+            }, 2000);
+          } else {
+            alert("Unsupported file format.");
+          }
+        } else {
+          alert("Rom does not exist.");
+        }
+      }
+
+      async function getCore(extension) {
+        const ext = extension ? extension.toLowerCase() : "nes";
+        if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
+
+        if (
+          ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext)
+        )
+          return "snes";
+
+        if (["z64", "n64"].includes(ext)) return "n64";
+
+        if (["pce"].includes(ext)) return "pce";
+
+        if (["ngp", "ngc"].includes(ext)) return "ngp";
+
+        if (["ws", "wsc"].includes(ext)) return "ws";
+
+        if (["col", "cv"].includes(ext)) return "coleco";
+
+        if (["d64"].includes(ext)) return "vice_x64";
+
+        if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
+        return "nes";
+      }
+      // 监听键盘事件
+      document.addEventListener("keydown", function (event) {
+        // 发送按键消息到父窗口
+        window.parent.postMessage({ action: "onKey", code: event.code }, "*");
+      });
+    </script>
+  </body>
+</html>

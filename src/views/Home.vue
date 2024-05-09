@@ -21,31 +21,31 @@
                 </a-button>
               </ATooltip>
 
-              <a-typography-text class="title">
+              <a-typography-text class="title text-ellipsis" :title="gameStore.title">
                 {{ gameStore.title }}
               </a-typography-text>
               <ATooltip mini :content="'重置<' + controlerStore.getResetKey + '>'" v-show="isElectron">
-                <a-button class="menu-btn" @click="handleReset">
+                <a-button class="menu-btn top-action" @click="handleReset">
                   <icon-refresh />
                 </a-button>
               </ATooltip>
               <ATooltip mini
                 :content="gameStore.isPlaying ? '暂停<' + controlerStore.getPauseKey + '>' : '开始<' + controlerStore.getPauseKey + '>'"
                 v-show="isElectron">
-                <a-button class="menu-btn" @click="handleTogglePlay">
+                <a-button class="menu-btn top-action" @click="handleTogglePlay">
                   <icon-pause v-if="gameStore.isPlaying" />
                   <icon-play-arrow v-else />
                 </a-button>
               </ATooltip>
               <ATooltip mini :content="'保存进度<' + controlerStore.getSaveKey + '>'" v-show="isElectron">
-                <a-button class="menu-btn" @click="handleSaveRecord">
+                <a-button class="menu-btn top-action" @click="handleSaveRecord">
                   <icon-save />
                 </a-button>
               </ATooltip>
 
-              <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]">
+              <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]" v-if="mainStore.isJsnes">
                 <ATooltip mini :content="'音量<' + controlerStore.getVolumeKey + '>'" v-show="isElectron">
-                  <a-button class="menu-btn" @click="handleMute">
+                  <a-button class="menu-btn top-action" @click="handleMute">
                     <icon-mute v-if="mainStore.volume == 0" />
                     <icon-sound v-else />
                   </a-button>
@@ -57,20 +57,26 @@
                 </template>
               </a-trigger>
               <ATooltip mini :content="'按键配置'" v-show="isElectron">
-                <a-button class="menu-btn" @click="handleKey">
+                <a-button class="menu-btn top-action" @click="handleKey">
                   <icon-robot />
                 </a-button>
               </ATooltip>
               <ATooltip mini :content="gameStore.isFeature ? '移除全局关键字' : '添加游戏关键字'" v-show="isElectron">
-                <a-button class="menu-btn" @click="handleFeatureClick">
+                <a-button class="menu-btn top-action" @click="handleFeatureClick">
                   <icon-share-external v-if="gameStore.isFeature" :style="{ color: '#1a73e8' }" />
                   <icon-share-external v-else />
                 </a-button>
               </ATooltip>
               <ATooltip mini content="存档" v-show="isElectron">
-                <a-button class="menu-btn" @click="handleRecordDrawer">
+                <a-button class="menu-btn top-action" @click="handleRecordDrawer">
                   <icon-history />
                 </a-button>
+              </ATooltip>
+              <ATooltip mini content="切换引擎" v-show="isElectron">
+                <a-radio-group type="button" size="large" v-model="mainStore.core" class="core-type">
+                  <a-radio value="JSNES">JSNES</a-radio>
+                  <a-radio value="EmulatorJS">EmulatorJS</a-radio>
+                </a-radio-group>
               </ATooltip>
             </div>
           </a-layout-header>
@@ -80,7 +86,8 @@
                 <a-spin></a-spin>
                 <span>游戏加载中...</span>
               </div>
-              <nes-game v-if="mainStore.isReady"></nes-game>
+              <nes-game v-if="mainStore.isReady && mainStore.isJsnes"></nes-game>
+              <IFrameGame v-if="mainStore.isReady && mainStore.isEmulatorJS"></IFrameGame>
             </a-layout-content>
           </a-layout>
         </a-layout>
@@ -113,6 +120,14 @@ let lastSplitSize = splitSizeRef.value
 watch(() => splitSizeRef.value, (newVal, oldVal) => {
   const s = (newVal + "").replace('px', "")
   $emit(SIDE_BAR_WIDTH, parseInt(s));
+})
+
+watch(() => mainStore.core, (newVal, oldVal) => {
+  if (newVal) {
+    gameStore.isPlaying = false;
+    gameStore.loading = true;
+    mainStore.saveCore()
+  }
 })
 
 // 卸载时更新状态库
@@ -304,5 +319,25 @@ function handleFeatureClick() {
   border-top: 1px solid var(--line-color);
   overflow: hidden;
   padding: 0 0 0 20px;
+}
+
+.core-type {
+  background-color: var(--c-bg-color);
+
+  .arco-radio-button {
+    :deep(.arco-radio-button-content) {
+      line-height: 36px;
+      font-size: 10px;
+      padding: 0 5px;
+    }
+  }
+}
+.text-ellipsis {
+  white-space: nowrap; /* 确保文本在一行内显示 */
+  overflow: hidden; /* 超出容器部分隐藏 */
+  text-overflow: ellipsis; /* 使用省略号表示文本超出 */
+}
+.top-action{
+  padding: 0 10px;
 }
 </style>,

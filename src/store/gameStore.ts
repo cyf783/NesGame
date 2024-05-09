@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { getCurrentTime, getFeatures, getItem, setItem } from "@/utils";
 import { IGameRuntimeExtend, ITreeItem } from "@/types";
-import { GAME_LAST, GAME_RECORD } from "@/utils/constant";
+import { GAME_CORE_JSNES, GAME_LAST, GAME_RECORD } from "@/utils/constant";
 import { useTreeStore } from "./treeStore";
 import { firstNode } from "@/utils/tree";
 import { GAME_DEFAULT } from "@/data/games";
@@ -51,7 +51,7 @@ export const useGameStore = defineStore("GameStore", {
       }
     },
     loadGame(game: ITreeItem) {
-      if(game.key==this.id){
+      if (game.key == this.id && this.isPlaying) {
         return;
       }
       const _r = getItem(GAME_RECORD + game.key);
@@ -67,12 +67,13 @@ export const useGameStore = defineStore("GameStore", {
         const r = features.filter((f) => f.code === this.featureKey);
         this.isFeature = r.length > 0;
       }
-      this.loading = true
+      this.loading = true;
     },
-    saveRecord(data: string, img: string) {
+    saveRecord(data: string, img: string, coreType: string) {
       this.records.push({
         id: "r_" + new Date().getTime(),
         title: `保存于 ${getCurrentTime()}`,
+        core: coreType ? coreType : GAME_CORE_JSNES,
         data: data,
         img: img,
       });

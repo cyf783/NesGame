@@ -2,6 +2,7 @@ export interface ITreeItem {
   title: string;
   key: string;
   path?: string;
+  ext?: string;
   children?: ITreeItem[];
 }
 
@@ -9,6 +10,7 @@ export interface IGame {
   id: string;
   title: string;
   path: string;
+  ext: string;
 }
 
 export interface IGameRecord {

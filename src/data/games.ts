@@ -2,6 +2,7 @@ export const GAME_DEFAULT = {
     id: "魂斗罗",
     title: "魂斗罗",
     path: "https://raw.githubusercontent.com/taiyuuki/vscode-nes/remote/roms/魂斗罗.nes",
+    ext: "nes"
   };
 export const GAME_LIST = {
   "经典热门": [

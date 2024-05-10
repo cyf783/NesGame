@@ -17,6 +17,7 @@ export const useGameStore = defineStore("GameStore", {
       id: GAME_DEFAULT.id,
       title: GAME_DEFAULT.title,
       path: GAME_DEFAULT.path,
+      ext: GAME_DEFAULT.ext,
       records: [],
     } as IGameRuntimeExtend;
   },
@@ -33,6 +34,7 @@ export const useGameStore = defineStore("GameStore", {
           id: lastGame.key,
           title: lastGame.title,
           path: lastGame.path,
+          ext: lastGame.ext?lastGame.ext:GAME_DEFAULT.ext,
         });
       } else {
         const treeStore = useTreeStore();
@@ -43,6 +45,7 @@ export const useGameStore = defineStore("GameStore", {
               id: first.key,
               title: first.title,
               path: first.path,
+              ext: first.ext,
             });
             return;
           }
@@ -59,6 +62,7 @@ export const useGameStore = defineStore("GameStore", {
         id: game.key,
         title: game.title,
         path: game.path,
+        ext: game.ext,
         records: _r ? _r : [],
       });
       setItem(GAME_LAST, game);

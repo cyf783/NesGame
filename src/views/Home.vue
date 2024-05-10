@@ -43,7 +43,7 @@
                 </a-button>
               </ATooltip>
 
-              <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]" v-if="mainStore.isJsnes">
+              <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]">
                 <ATooltip mini :content="'音量<' + controlerStore.getVolumeKey + '>'" v-show="isElectron">
                   <a-button class="menu-btn top-action" @click="handleMute">
                     <icon-mute v-if="mainStore.volume == 0" />
@@ -56,7 +56,7 @@
                   </div>
                 </template>
               </a-trigger>
-              <ATooltip mini :content="'按键配置'" v-show="isElectron">
+              <ATooltip mini :content="'配置'" v-show="isElectron">
                 <a-button class="menu-btn top-action" @click="handleKey">
                   <icon-robot />
                 </a-button>
@@ -172,7 +172,7 @@ function handleMute() {
 
 function handleKey() {
   Drawer.open({
-    title: `按键配置`,
+    title: `配置`,
     content: () => (h(Key)),
     width: 340,
     footer: false

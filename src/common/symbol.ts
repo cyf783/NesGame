@@ -14,6 +14,8 @@ export const GAME_LOAD_RECORD = Symbol("GAME_LOAD_RECORD");
 export const GAME_SAVE_RECORD = Symbol("GAME_SAVE_RECORD");
 export const GAME_RESET = Symbol("GAME_RESET");
 export const GAME_TOGGLE_PLAY = Symbol("GAME_TOGGLE_PLAY");
+export const GAME_EMULATORJS_GAMEPAD = Symbol("GAME_EMULATORJS_GAMEPAD");
+export const GAME_EMULATORJS_CHEAT = Symbol("GAME_EMULATORJS_CHEAT");
 
 export const SIDE_BAR_WIDTH = Symbol("SIDE_BAR_WIDTH");
 

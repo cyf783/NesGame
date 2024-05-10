@@ -15,6 +15,12 @@
         padding: 0;
         margin: 0;
       }
+      .ejs_big_screen .ejs_volume_parent {
+        display: none;
+      }
+      .ejs_big_screen .ejs_menu_bar{
+        display: none !important;
+      }
     </style>
   </head>
   <body>
@@ -24,11 +30,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get("rom");
       }
+      function getExt() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("ext");
+      }
       async function loadROM() {
         const romLink = getRom();
+        const ext = getExt();
         if (romLink) {
           const parts = romLink.split(".");
-          const extension = parts[parts.length - 1];
+          const extension = ext ? ext : parts[parts.length - 1];
           const core = await getCore(extension);
 
           if (core) {
@@ -59,6 +70,9 @@
               loadSavFiles: false,
               cacheManager: false,
               netplay: false,
+              mute: false,
+              restart: false,
+              playPause: false,
             };
             window.EJS_defaultControls = {
               0: {
@@ -126,10 +140,7 @@
             };
 
             window.EJS_onGameStart = () => {
-              window.parent.postMessage(
-                { action: "onStart"},
-                "*"
-              );
+              window.parent.postMessage({ action: "onStart" }, "*");
             };
 
             script.src = "data/loader.js";
@@ -160,7 +171,17 @@
         if (["fds", "nes", "unif", "unf"].includes(ext)) return "nes";
 
         if (
-          ["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext)
+          [
+            "smc",
+            "fig",
+            "sfc",
+            "gd3",
+            "gd7",
+            "dx2",
+            "bsx",
+            "swc",
+            "snes",
+          ].includes(ext)
         )
           return "snes";
 
@@ -172,9 +193,9 @@
 
         if (["ws", "wsc"].includes(ext)) return "ws";
 
-        if (["col", "cv"].includes(ext)) return "coleco";
+        if (["col", "cv", "coleco"].includes(ext)) return "coleco";
 
-        if (["d64"].includes(ext)) return "vice_x64";
+        if (["d64", "vice_x64"].includes(ext)) return "vice_x64";
 
         if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
         return "nes";

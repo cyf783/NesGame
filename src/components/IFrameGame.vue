@@ -7,22 +7,25 @@ import { ref } from 'vue'
 import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
-import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH } from '@/common/symbol';
+import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH, GAME_EMULATORJS_GAMEPAD, GAME_EMULATORJS_CHEAT } from '@/common/symbol';
 import { IGameRecord } from '@/types';
 import { GAME_CORE_EMULATOR_JS } from '@/utils/constant';
 const iframeWindow = ref<any>(null);
 
-const gameStore = useGameStore()
 const mainStore = useMainStore()
+const gameStore = useGameStore()
 const controlerStore = useControlerStore()// 控制器映射 pinia
 const gameUrl = ref<string>(gameStore.path)
-const iframeUrl = ref<string>("game.html?rom=" + gameStore.path)
+const iframeUrl = ref<string>("game.html?rom=" + gameStore.path + "&ext=" + gameStore.ext)
 
 watch(() => gameStore.path, (newVal, oldVal) => {
   if (newVal) {
     gameUrl.value = newVal
-    iframeUrl.value = "game.html?rom=" + newVal
+    iframeUrl.value = "game.html?rom=" + newVal + "&ext=" + gameStore.ext
   }
+})
+watch(() => mainStore.volume, (newVal, oldVal) => {
+  game_setVolume(newVal)
 })
 
 useEventBus(GAME_LOAD_RECORD, (rec: IGameRecord) => {
@@ -64,6 +67,20 @@ useEventBus(GAME_SAVE_RECORD, () => {
 
 useEventBus(GAME_RESET, () => {
   game_reset()
+})
+
+
+useEventBus(GAME_EMULATORJS_GAMEPAD, () => {
+  if (iframeWindow.value) {
+    iframeWindow.value.window.EJS_emulator.controlMenu.style.display = "";
+  }
+})
+
+
+useEventBus(GAME_EMULATORJS_CHEAT, () => {
+  if (iframeWindow.value) {
+    iframeWindow.value.window.EJS_emulator.cheatMenu.style.display = "";
+  }
 })
 
 const game_loadRecord = (rec: Uint8Array) => {
@@ -126,14 +143,13 @@ const game_pause = () => {
   }
 }
 
-const game_mute = () => {
+const game_setVolume = (num: number) => {
   if (iframeWindow.value) {
-    if (iframeWindow.value.window.EJS_emulator.muted) {
-      iframeWindow.value.window.EJS_emulator.setVolume(0.8);
-      iframeWindow.value.window.EJS_emulator.muted=false;
+    iframeWindow.value.window.EJS_emulator.setVolume(num * 0.01);
+    if (num == 0) {
+      iframeWindow.value.window.EJS_emulator.muted = true;
     } else {
-      iframeWindow.value.window.EJS_emulator.setVolume(0);
-      iframeWindow.value.window.EJS_emulator.muted=true;
+      iframeWindow.value.window.EJS_emulator.muted = false;
     }
   }
 }
@@ -154,7 +170,7 @@ function systemControlEvent(e: KeyboardEvent) {
       $emit(GAME_RESET);
       break
     case controlerStore.p0.MUTE:
-      game_mute()
+      mainStore.mute()
       break
     default:
       break
@@ -178,7 +194,7 @@ onMounted(() => {
           $emit(GAME_RESET);
           break
         case controlerStore.p0.MUTE:
-          game_mute()
+          mainStore.mute()
           break
         default:
           break

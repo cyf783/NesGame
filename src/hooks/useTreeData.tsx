@@ -23,6 +23,7 @@ export function useTreeData() {
     const res = preCheck();
     let title = "";
     let path = "";
+    let ext = "";
     const InputInstance = (
       <div>
           游戏名
@@ -34,6 +35,11 @@ export function useTreeData() {
           <Input
             defaultValue={path}
             onInput={(value: string) => (path = value)}
+          ></Input>
+          游戏文件扩展名
+          <Input
+            defaultValue={ext}
+            onInput={(value: string) => (ext = value)}
           ></Input>
       </div>
     );
@@ -59,10 +65,16 @@ export function useTreeData() {
           done(false);
           return;
         }
+        if (!ext) {
+          Message.error("游戏文件扩展名不能为空");
+          done(false);
+          return;
+        }
         let iFileItem: ITreeItem = {
           title: title,
-          key: createKey(title),
+          key: createKey(path),
           path: path,
+          ext: ext
         };
         if (treeStore.hasKey(iFileItem.key)) {
           Message.error("游戏地址已存在，不需要重复添加");
@@ -114,13 +126,13 @@ export function useTreeData() {
       content: () => InputInstance,
       onBeforeOk: (done) => {
         if (!title) {
-          Message.error("游戏名不能为空");
+          Message.error("分类名不能为空");
           done(false);
           return;
         }
 
         if (title.length > 100) {
-          Message.error("游戏名过长");
+          Message.error("分类名过长");
           done(false);
           return;
         }

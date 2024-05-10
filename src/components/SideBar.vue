@@ -157,8 +157,10 @@ watch(() => treeStore.data, (newVal, oldVal) => {
   if (!findNodeByKey(treeStore.selected!.key, treeStore.data)) {
     gameStore.init()
     treeStore.selected = {
-      title: gameStore.title, path: gameStore.path,
-      key: gameStore.id
+      title: gameStore.title, 
+      path: gameStore.path,
+      key: gameStore.id,
+      ext: gameStore.ext,
     }
   }
   nextTick(() => initEvent())

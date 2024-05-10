@@ -34,7 +34,8 @@ export const useMainStore = defineStore("MainStore", {
       treeStore.selected = {
         title: gameStore.title,
         path: gameStore.path,
-        key: gameStore.id
+        key: gameStore.id,
+        ext: gameStore.ext,
       };
       const controlerStore = useControlerStore();
       controlerStore.init();

@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     ARadio: typeof import('@arco-design/web-vue')['Radio']
     ARadioGroup: typeof import('@arco-design/web-vue')['RadioGroup']
     ASlider: typeof import('@arco-design/web-vue')['Slider']
+    ASpace: typeof import('@arco-design/web-vue')['Space']
     ASpin: typeof import('@arco-design/web-vue')['Spin']
     ASplit: typeof import('@arco-design/web-vue')['Split']
     ATable: typeof import('@arco-design/web-vue')['Table']

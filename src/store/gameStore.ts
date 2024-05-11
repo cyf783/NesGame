@@ -68,23 +68,13 @@ export const useGameStore = defineStore("GameStore", {
       this.core = c ? c : GAME_CORE_EMULATOR_JS;
       const lastGame = getItem(GAME_LAST);
       if (lastGame) {
-        this.$patch({
-          id: lastGame.key,
-          title: lastGame.title,
-          path: lastGame.path,
-          ext: lastGame.ext ? lastGame.ext : GAME_DEFAULT.ext,
-        });
+        this.loadGame(lastGame)
       } else {
         const treeStore = useTreeStore();
         if (treeStore) {
           const first = firstNode(treeStore.treeData);
           if (first) {
-            this.$patch({
-              id: first.key,
-              title: first.title,
-              path: first.path,
-              ext: first.ext ? first.ext : GAME_DEFAULT.ext,
-            });
+            this.loadGame(first)
             return;
           }
         }

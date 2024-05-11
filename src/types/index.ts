@@ -28,4 +28,5 @@ export interface IGameRuntimeExtend extends IGame {
   records: IGameRecord[];
   isPlaying: boolean;
   loading: boolean;
+  core: string;
 }

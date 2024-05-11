@@ -1,10 +1,17 @@
 import { defineStore } from "pinia";
 import { getCurrentTime, getFeatures, getItem, setItem } from "@/utils";
 import { IGameRuntimeExtend, ITreeItem } from "@/types";
-import { GAME_CORE_JSNES, GAME_LAST, GAME_RECORD } from "@/utils/constant";
+import {
+  GAME_CORE,
+  GAME_CORE_EMULATOR_JS,
+  GAME_CORE_JSNES,
+  GAME_LAST,
+  GAME_RECORD,
+} from "@/utils/constant";
 import { useTreeStore } from "./treeStore";
 import { firstNode } from "@/utils/tree";
 import { GAME_DEFAULT } from "@/data/games";
+import { stat } from "fs";
 
 export const useGameStore = defineStore("GameStore", {
   state: () => {
@@ -13,28 +20,43 @@ export const useGameStore = defineStore("GameStore", {
       isFeature: false,
       isPlaying: false,
       loading: true,
+      core: GAME_CORE_EMULATOR_JS,
+      records: [],
 
       id: GAME_DEFAULT.id,
       title: GAME_DEFAULT.title,
       path: GAME_DEFAULT.path,
       ext: GAME_DEFAULT.ext,
-      records: [],
     } as IGameRuntimeExtend;
   },
   getters: {
     featureKey: (state) => {
       return "game/" + state.id;
     },
+    isNes: (state) => {
+      return state.ext == "nes";
+    },
+    isJsnes: (state) => {
+      return (state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS) == GAME_CORE_JSNES;
+    },
+    isEmulatorJS: (state) => {
+      return (state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS) == GAME_CORE_EMULATOR_JS;
+    },
+    lastCore: (state) => {
+      return state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS;
+    },
   },
   actions: {
     init() {
+      const c = getItem(GAME_CORE);
+      this.core = c ? c : GAME_CORE_EMULATOR_JS;
       const lastGame = getItem(GAME_LAST);
       if (lastGame) {
         this.$patch({
           id: lastGame.key,
           title: lastGame.title,
           path: lastGame.path,
-          ext: lastGame.ext?lastGame.ext:GAME_DEFAULT.ext,
+          ext: lastGame.ext ? lastGame.ext : GAME_DEFAULT.ext,
         });
       } else {
         const treeStore = useTreeStore();
@@ -62,7 +84,7 @@ export const useGameStore = defineStore("GameStore", {
         id: game.key,
         title: game.title,
         path: game.path,
-        ext: game.ext,
+        ext: game.ext ? game.ext : GAME_DEFAULT.ext,
         records: _r ? _r : [],
       });
       setItem(GAME_LAST, game);
@@ -103,6 +125,9 @@ export const useGameStore = defineStore("GameStore", {
     clearRecords() {
       this.records = [];
       setItem(GAME_RECORD + this.id, this.records);
+    },
+    saveCore() {
+      setItem(GAME_CORE, this.core);
     },
   },
 });

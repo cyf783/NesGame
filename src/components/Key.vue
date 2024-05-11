@@ -1,9 +1,9 @@
 <template>
   <div class="game-record">
-    <div class="header" v-if="mainStore.isJsnes">
+    <div class="header" v-if="gameStore.isJsnes">
       <h3>玩家P1</h3>
     </div>
-    <a-table :data="controlerStore.getP1Key" :pagination="false" v-if="mainStore.isJsnes">
+    <a-table :data="controlerStore.getP1Key" :pagination="false" v-if="gameStore.isJsnes">
       <template #columns>
         <a-table-column title="动作" data-index="action" :width="100"></a-table-column>
         <a-table-column title="键值">
@@ -15,10 +15,10 @@
         </a-table-column>
       </template>
     </a-table>
-    <div class="header" v-if="mainStore.isJsnes">
+    <div class="header" v-if="gameStore.isJsnes">
       <h3>玩家P2</h3>
     </div>
-    <a-table :data="controlerStore.getP2Key" :pagination="false" v-if="mainStore.isJsnes">
+    <a-table :data="controlerStore.getP2Key" :pagination="false" v-if="gameStore.isJsnes">
       <template #columns>
         <a-table-column title="动作" data-index="action" :width="100"></a-table-column>
         <a-table-column title="键值">
@@ -30,7 +30,7 @@
         </a-table-column>
       </template>
     </a-table>
-    <div class="header" v-if="mainStore.isEmulatorJS">
+    <div class="header" v-if="gameStore.isEmulatorJS">
       <a-space style="width:100%" direction="vertical">
         <a-button type="primary" status="success" long @click="handleGamepad">玩家按键配置</a-button>
         <a-button type="primary" status="warning" long @click="handleCheat">游戏秘籍配置</a-button>
@@ -57,10 +57,10 @@
 <script setup lang="ts">
 import { GAME_EMULATORJS_CHEAT, GAME_EMULATORJS_GAMEPAD } from '@/common/symbol';
 import { $emit } from '@/hooks/useEventBus';
-import { useControlerStore, useMainStore } from '@/store';
+import { useControlerStore, useGameStore } from '@/store';
 
 const controlerStore = useControlerStore()// 控制器映射 pinia
-const mainStore = useMainStore()
+const gameStore = useGameStore()
 
 function handleKeydown(event: any) {
   // 阻止默认行为

@@ -2,31 +2,24 @@ import { defineStore } from "pinia";
 import { useTreeStore } from "./treeStore";
 import { useGameStore } from "./gameStore";
 import { getItem, removeItem, setItem } from "@/utils";
-import { GAME_TREE_DATA, GAME_LAST, GAME_VOLUME, GAME_CORE_EMULATOR_JS, GAME_CORE_JSNES, GAME_CORE } from "@/utils/constant";
+import {
+  GAME_TREE_DATA,
+  GAME_LAST,
+  GAME_VOLUME,
+} from "@/utils/constant";
 import { useControlerStore } from "./controlerStore";
 
 export const useMainStore = defineStore("MainStore", {
   state: () => ({
-    core: GAME_CORE_EMULATOR_JS,
     volume: 80,
     lastVolume: 80,
-    isReady:false,
-    isDetach:false
+    isReady: false,
+    isDetach: false,
   }),
-  getters: {
-    isJsnes: (state) => {
-      return state.core == GAME_CORE_JSNES;
-    },
-    isEmulatorJS: (state) => {
-      return state.core == GAME_CORE_EMULATOR_JS;
-    },
-  },
   actions: {
     init() {
-      const c =  getItem(GAME_CORE)
-      this.core = c?c:GAME_CORE_EMULATOR_JS
-      const v =  getItem(GAME_VOLUME)
-      this.volume = v==0||v?v:80;
+      const v = getItem(GAME_VOLUME);
+      this.volume = v == 0 || v ? v : 80;
       const treeStore = useTreeStore();
       treeStore.init();
       const gameStore = useGameStore();
@@ -46,20 +39,17 @@ export const useMainStore = defineStore("MainStore", {
       removeItem(GAME_TREE_DATA);
       this.init();
     },
-    mute(){
-      if(this.volume){
-        this.lastVolume = this.volume
-        this.volume = 0
-      }else{
-        this.volume = this.lastVolume?this.lastVolume:80
+    mute() {
+      if (this.volume) {
+        this.lastVolume = this.volume;
+        this.volume = 0;
+      } else {
+        this.volume = this.lastVolume ? this.lastVolume : 80;
       }
       this.saveGain();
     },
-    saveGain(){
-      setItem(GAME_VOLUME,this.volume);
+    saveGain() {
+      setItem(GAME_VOLUME, this.volume);
     },
-    saveCore(){
-      setItem(GAME_CORE,this.core);
-    }
   },
 });

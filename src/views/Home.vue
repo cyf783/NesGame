@@ -72,8 +72,8 @@
                   <icon-history />
                 </a-button>
               </ATooltip>
-              <ATooltip mini content="切换引擎" v-show="isElectron">
-                <a-radio-group type="button" size="large" v-model="mainStore.core" class="core-type">
+              <ATooltip mini content="切换引擎" v-show="isElectron" v-if="gameStore.isNes">
+                <a-radio-group type="button" size="large" v-model="gameStore.core" class="core-type">
                   <a-radio value="JSNES">JSNES</a-radio>
                   <a-radio value="EmulatorJS">EmulatorJS</a-radio>
                 </a-radio-group>
@@ -86,8 +86,8 @@
                 <a-spin></a-spin>
                 <span>游戏加载中...</span>
               </div>
-              <nes-game v-if="mainStore.isReady && mainStore.isJsnes"></nes-game>
-              <IFrameGame v-if="mainStore.isReady && mainStore.isEmulatorJS"></IFrameGame>
+              <nes-game v-if="mainStore.isReady && gameStore.isJsnes"></nes-game>
+              <IFrameGame v-if="mainStore.isReady && gameStore.isEmulatorJS"></IFrameGame>
             </a-layout-content>
           </a-layout>
         </a-layout>
@@ -122,11 +122,11 @@ watch(() => splitSizeRef.value, (newVal, oldVal) => {
   $emit(SIDE_BAR_WIDTH, parseInt(s));
 })
 
-watch(() => mainStore.core, (newVal, oldVal) => {
+watch(() => gameStore.lastCore, (newVal, oldVal) => {
   if (newVal) {
     gameStore.isPlaying = false;
     gameStore.loading = true;
-    mainStore.saveCore()
+    gameStore.saveCore()
   }
 })
 

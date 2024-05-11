@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { EmitErrorObj, NesVue } from 'nes-vue';
-import { useInstance } from '@/utils';
+import { stringToUint8Array, uint8ArrayToString, useInstance } from '@/utils';
 import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
@@ -36,7 +36,8 @@ watch(() => gameStore.path, (newVal, oldVal) => {
 
 useEventBus(GAME_LOAD_RECORD, (rec: IGameRecord) => {
   if (rec && rec.data) {
-    nes.value.loadGameData(JSON.parse(rec.data))
+    console.log(JSON.parse(uint8ArrayToString(rec.data)))
+    nes.value.loadGameData(JSON.parse(uint8ArrayToString(rec.data)))
     Message.success("游戏存档加载成功")
   }
 })
@@ -82,7 +83,7 @@ useEventBus(GAME_SAVE_RECORD, () => {
     const ctx = cvs.getContext('2d')
     if (ctx) {
       ctx.drawImage(saveImage, 0, 0, cvs.width, cvs.height)
-      gameStore.saveRecord(JSON.stringify(nes.value.getGameData()), cvs.toDataURL('image/png'), GAME_CORE_JSNES)
+      gameStore.saveRecord(stringToUint8Array(JSON.stringify(nes.value.getGameData())), cvs.toDataURL('image/png'), GAME_CORE_JSNES)
       Message.success("游戏存档保存成功")
     }
   }

@@ -1,17 +1,26 @@
 import { defineStore } from "pinia";
-import { getCurrentTime, getFeatures, getItem, setItem } from "@/utils";
-import { IGameRuntimeExtend, ITreeItem } from "@/types";
+import pako from "Pako";
+import {
+  getAttachment,
+  getCurrentTime,
+  getFeatures,
+  getItem,
+  postAttachment,
+  removeItem,
+  setItem,
+} from "@/utils";
+import { IGameRecord, IGameRuntimeExtend, ITreeItem } from "@/types";
 import {
   GAME_CORE,
   GAME_CORE_EMULATOR_JS,
   GAME_CORE_JSNES,
   GAME_LAST,
   GAME_RECORD,
+  GAME_RECORD_ATTACHMENT,
 } from "@/utils/constant";
 import { useTreeStore } from "./treeStore";
 import { firstNode } from "@/utils/tree";
 import { GAME_DEFAULT } from "@/data/games";
-import { stat } from "fs";
 
 export const useGameStore = defineStore("GameStore", {
   state: () => {
@@ -37,10 +46,16 @@ export const useGameStore = defineStore("GameStore", {
       return state.ext == "nes";
     },
     isJsnes: (state) => {
-      return (state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS) == GAME_CORE_JSNES;
+      return (
+        (state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS) ==
+        GAME_CORE_JSNES
+      );
     },
     isEmulatorJS: (state) => {
-      return (state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS) == GAME_CORE_EMULATOR_JS;
+      return (
+        (state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS) ==
+        GAME_CORE_EMULATOR_JS
+      );
     },
     lastCore: (state) => {
       return state.ext == "nes" ? state.core : GAME_CORE_EMULATOR_JS;
@@ -67,7 +82,7 @@ export const useGameStore = defineStore("GameStore", {
               id: first.key,
               title: first.title,
               path: first.path,
-              ext: first.ext,
+              ext: first.ext ? first.ext : GAME_DEFAULT.ext,
             });
             return;
           }
@@ -95,24 +110,40 @@ export const useGameStore = defineStore("GameStore", {
       }
       this.loading = true;
     },
-    saveRecord(data: string, img: string, coreType: string) {
-      this.records.push({
-        id: "r_" + new Date().getTime(),
-        title: `保存于 ${getCurrentTime()}`,
-        core: coreType ? coreType : GAME_CORE_JSNES,
-        data: data,
-        img: img,
+    saveRecord(data: Uint8Array, img: string, coreType: string) {
+      return new Promise((resolve) => {
+        const rid = "r_" + new Date().getTime();
+        this.records.push({
+          id: rid,
+          title: `保存于 ${getCurrentTime()}`,
+          core: coreType ? coreType : GAME_CORE_JSNES,
+          img: img,
+        });
+        postAttachment(
+          GAME_RECORD_ATTACHMENT + this.id + "/" + rid,
+          pako.deflate(data),
+          "text/plain"
+        );
+        setItem(GAME_RECORD + this.id, this.records);
+        resolve(true);
       });
-      setItem(GAME_RECORD + this.id, this.records);
     },
     loadRecord(id: string) {
-      for (let i = 0; i < this.records.length; i++) {
-        const r = this.records[i];
-        if (r.id == id) {
-          return r;
+      return new Promise<IGameRecord | null>((resolve) => {
+        for (let i = 0; i < this.records.length; i++) {
+          const r = this.records[i];
+          if (r.id == id) {
+            const td = getAttachment(
+              GAME_RECORD_ATTACHMENT + this.id + "/" + id
+            );
+            if (td) {
+              r.data = pako.inflate(td);
+              resolve(r);
+            }
+          }
         }
-      }
-      return null;
+        resolve(null);
+      });
     },
     removeRecords(id: string) {
       for (let i = this.records.length - 1; i >= 0; i--) {
@@ -121,6 +152,7 @@ export const useGameStore = defineStore("GameStore", {
         }
       }
       setItem(GAME_RECORD + this.id, this.records);
+      removeItem(GAME_RECORD_ATTACHMENT + this.id + "/" + id);
     },
     clearRecords() {
       this.records = [];

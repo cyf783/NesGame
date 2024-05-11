@@ -30,7 +30,7 @@ watch(() => mainStore.volume, (newVal, oldVal) => {
 
 useEventBus(GAME_LOAD_RECORD, (rec: IGameRecord) => {
   if (rec && rec.data) {
-    game_loadRecord(stringToUint8Array(rec.data))
+    game_loadRecord(rec.data)
   }
 })
 
@@ -98,7 +98,7 @@ const game_saveRecord = async () => {
     reader.readAsDataURL(new Blob([screenshot]));
     reader.onload = function (e) {
       //@ts-ignore
-      gameStore.saveRecord(Uint8ArrayToString(state), e.target?.result, GAME_CORE_EMULATOR_JS)
+      gameStore.saveRecord(state, e.target?.result, GAME_CORE_EMULATOR_JS)
       Message.success("游戏存档保存成功")
     };
   }
@@ -209,22 +209,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('keypress', systemControlEvent)
 })
-function Uint8ArrayToString(fileData: Uint8Array) {
-  var dataString = "";
-  for (var i = 0; i < fileData.length; i++) {
-    dataString += String.fromCharCode(fileData[i]);
-  }
-  return dataString
-}
-function stringToUint8Array(str: string) {
-  var arr = [];
-  for (var i = 0, j = str.length; i < j; ++i) {
-    arr.push(str.charCodeAt(i));
-  }
-
-  var tmpUint8Array = new Uint8Array(arr);
-  return tmpUint8Array
-}
 </script>
 <style lang="less" scoped>
 .gframe {

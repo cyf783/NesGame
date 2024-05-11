@@ -17,7 +17,7 @@ export interface IGameRecord {
   id: string;
   img: string;
   title: string;
-  data: string;
+  data?: Uint8Array | null | undefined;
   core: string;
 }
 

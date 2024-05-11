@@ -9,17 +9,19 @@
     "@types/md5": "^2.3.5",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
+    "nes-vue": "file:nes-vue",
+    "pako": "^2.1.0",
     "pinia": "^2.1.4",
     "tiny-emitter": "^2.1.0",
     "unist-util-visit": "^4.1.2",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.2",
-    "nes-vue": "file:nes-vue"
+    "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@types/html-minifier-terser": "^7.0.0",
     "@types/lodash-es": "^4.17.7",
     "@types/node": "^18.16.18",
+    "@types/pako": "^2.0.3",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "html-minifier-terser": "^7.2.0",

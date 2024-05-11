@@ -86,8 +86,8 @@
                 <a-spin></a-spin>
                 <span>游戏加载中...</span>
               </div>
-              <nes-game v-if="mainStore.isReady && gameStore.isJsnes"></nes-game>
-              <IFrameGame v-if="mainStore.isReady && gameStore.isEmulatorJS"></IFrameGame>
+              <JsNesGame v-if="mainStore.isReady && gameStore.isJsnes"></JsNesGame>
+              <EJSGame v-if="mainStore.isReady && gameStore.isEmulatorJS"></EJSGame>
             </a-layout-content>
           </a-layout>
         </a-layout>

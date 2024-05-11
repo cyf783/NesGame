@@ -46,12 +46,15 @@ export function useTreeData() {
         },
         onSearch: (value: string, ev: MouseEvent) => {
           const tmp = showGameFileOpenDialog();
-          if(tmp) {
+          if (tmp) {
             path.value = tmp[0];
-            const p = path.value.split(".")
-            ext.value = p[p.length-1]
-          } 
-
+            const t = path.value.split(/\\|\//).pop();
+            if(t){
+              const p = t.split(".");
+              ext.value = p[p.length - 1];
+              title.value = p[0];
+            }
+          }
         },
       }),
       h("span", "游戏文件扩展名"),

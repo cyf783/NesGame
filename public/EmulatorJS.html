@@ -59,7 +59,7 @@
             window.EJS_biosUrl = "";
             window.EJS_gameUrl = romLink;
             window.EJS_core = core;
-            window.EJS_pathtodata = "data/";
+            window.EJS_pathtodata = "emulator_js/";
             window.EJS_startOnLoaded = true;
             window.EJS_backgroundColor = "#000";
             window.EJS_Buttons = {
@@ -152,14 +152,10 @@
                   { action: "onKey", code: event.code },
                   "*"
                 );
-                // 阻止默认行为
-                evt.preventDefault();
-                // 阻止事件冒泡
-                evt.stopPropagation();
               });
             };
 
-            script.src = "data/loader.js";
+            script.src = "emulator_js/loader.js";
             document.body.appendChild(script);
             setTimeout(() => {
               window.EJS_emulator.addEventListener(

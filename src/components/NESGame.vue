@@ -9,28 +9,46 @@ import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
 import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, SIDE_BAR_WIDTH, GAME_EMULATORJS_GAMEPAD, GAME_EMULATORJS_CHEAT } from '@/common/symbol';
 import { IGameRecord } from '@/types';
-import { GAME_CORE_EMULATOR_JS } from '@/utils/constant';
+import { GAME_CORE_EMULATOR_JS, GAME_CORE_JSNES } from '@/utils/constant';
+import { stringToUint8Array, uint8ArrayToString } from '@/utils';
 const iframeWindow = ref<any>(null);
 
 const mainStore = useMainStore()
 const gameStore = useGameStore()
 const controlerStore = useControlerStore()// 控制器映射 pinia
 const gameUrl = ref<string>(gameStore.path)
-const iframeUrl = ref<string>("EmulatorJS.html?rom=" + gameStore.path + "&ext=" + gameStore.ext)
+const iframeUrl = ref<string>("JsNes.html?rom=" + gameStore.path + "&ext=" + gameStore.ext)
 
 watch(() => gameStore.path, (newVal, oldVal) => {
   if (newVal) {
     gameUrl.value = newVal
-    iframeUrl.value = "EmulatorJS.html?rom=" + newVal + "&ext=" + gameStore.ext
+    iframeUrl.value = "JsNes.html?rom=" + newVal + "&ext=" + gameStore.ext
   }
 })
+
 watch(() => mainStore.volume, (newVal, oldVal) => {
   game_setVolume(newVal)
 })
 
+watch(() => controlerStore.p1, (newVal, oldVal) => {
+  game_setKeys({
+    'p1': newVal,
+    'p2': controlerStore.p2
+  })
+},
+  { deep: true })
+
+watch(() => controlerStore.p2, (newVal, oldVal) => {
+  game_setKeys({
+    'p1': controlerStore.p1,
+    'p2': newVal
+  })
+},
+  { deep: true })
+
 useEventBus(GAME_LOAD_RECORD, (rec: IGameRecord) => {
   if (rec && rec.data) {
-    game_loadRecord(rec.data)
+    game_loadRecord(JSON.parse(uint8ArrayToString(rec.data)))
   }
 })
 
@@ -69,88 +87,51 @@ useEventBus(GAME_RESET, () => {
   game_reset()
 })
 
-
-useEventBus(GAME_EMULATORJS_GAMEPAD, () => {
+const game_loadRecord = (rec: any) => {
   if (iframeWindow.value) {
-    iframeWindow.value.window.EJS_emulator.controlMenu.style.display = "";
-  }
-})
-
-
-useEventBus(GAME_EMULATORJS_CHEAT, () => {
-  if (iframeWindow.value) {
-    iframeWindow.value.window.EJS_emulator.cheatMenu.style.display = "";
-  }
-})
-
-const game_loadRecord = (rec: Uint8Array) => {
-  if (iframeWindow.value) {
-    iframeWindow.value.window.EJS_emulator.gameManager.loadState(rec);
+    iframeWindow.value.window.JSNES.loadNesData(rec);
     Message.success("游戏存档加载成功")
   }
 }
 
 const game_saveRecord = async () => {
   if (iframeWindow.value) {
-    const state = await iframeWindow.value.window.EJS_emulator.gameManager.getState();
-    const screenshot = await iframeWindow.value.window.EJS_emulator.gameManager.screenshot();
-    var reader = new FileReader();
-    reader.readAsDataURL(new Blob([screenshot]));
-    reader.onload = function (e) {
-      //@ts-ignore
-      gameStore.saveRecord(state, e.target?.result, GAME_CORE_EMULATOR_JS)
-      Message.success("游戏存档保存成功")
-    };
+    const data = await iframeWindow.value.window.JSNES.getNesData();
+    const screenshot = await iframeWindow.value.window.JSNES.getNesImg();
+    gameStore.saveRecord(stringToUint8Array(JSON.stringify(data)), screenshot, GAME_CORE_JSNES)
+    Message.success("游戏存档保存成功")
+  }
+}
+
+const game_setKeys = (keys: any) => {
+  if (iframeWindow.value) {
+    iframeWindow.value.window.JSNES.setKeys(keys);
   }
 }
 
 const game_reset = () => {
   if (iframeWindow.value) {
-    if (iframeWindow.value.window.EJS_emulator.isNetplay && iframeWindow.value.window.EJS_emulator.netplay.owner) {
-      iframeWindow.value.window.EJS_emulator.gameManager.saveSaveFiles();
-      iframeWindow.value.window.EJS_emulator.gameManager.restart();
-      iframeWindow.value.window.EJS_emulator.netplay.reset();
-      iframeWindow.value.window.EJS_emulator.netplay.sendMessage({ restart: true });
-      iframeWindow.value.window.EJS_emulator.play();
-    } else if (!iframeWindow.value.window.EJS_emulator.isNetplay) {
-      iframeWindow.value.window.EJS_emulator.gameManager.saveSaveFiles();
-      iframeWindow.value.window.EJS_emulator.gameManager.restart();
-    }
+    iframeWindow.value.window.JSNES.reset();
   }
 }
 
 
 const game_play = () => {
   if (iframeWindow.value) {
-    if (iframeWindow.value.window.EJS_emulator.isNetplay && iframeWindow.value.window.EJS_emulator.netplay.owner) {
-      iframeWindow.value.window.EJS_emulator.play();
-      iframeWindow.value.window.EJS_emulator.netplay.sendMessage({ play: true });
-    } else if (!iframeWindow.value.window.EJS_emulator.isNetplay) {
-      iframeWindow.value.window.EJS_emulator.play();
-    }
+    iframeWindow.value.window.JSNES.play();
   }
 }
 
 
 const game_pause = () => {
   if (iframeWindow.value) {
-    if (iframeWindow.value.window.EJS_emulator.isNetplay && iframeWindow.value.window.EJS_emulator.netplay.owner) {
-      iframeWindow.value.window.EJS_emulator.pause();
-      iframeWindow.value.window.EJS_emulator.netplay.sendMessage({ pause: true });
-    } else if (!iframeWindow.value.window.EJS_emulator.isNetplay) {
-      iframeWindow.value.window.EJS_emulator.pause();
-    }
+    iframeWindow.value.window.JSNES.pause();
   }
 }
 
 const game_setVolume = (num: number) => {
   if (iframeWindow.value) {
-    iframeWindow.value.window.EJS_emulator.setVolume(num * 0.01);
-    if (num == 0) {
-      iframeWindow.value.window.EJS_emulator.muted = true;
-    } else {
-      iframeWindow.value.window.EJS_emulator.muted = false;
-    }
+    iframeWindow.value.window.JSNES.setVolume(num);
   }
 }
 
@@ -203,6 +184,10 @@ onMounted(() => {
       gameStore.isPlaying = true;
       gameStore.loading = false;
       game_setVolume(mainStore.volume)
+      game_setKeys({
+        'p1': controlerStore.p1,
+        'p2': controlerStore.p2
+      })
     }
   }, false);
 })

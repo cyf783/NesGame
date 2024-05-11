@@ -32,13 +32,13 @@ declare module '@vue/runtime-core' {
     ATrigger: typeof import('@arco-design/web-vue')['Trigger']
     ATypographyText: typeof import('@arco-design/web-vue')['TypographyText']
     EJSGame: typeof import('./src/components/EJSGame.vue')['default']
-    IFrameGame: typeof import('./src/components/EJSGame.vue')['default']
     JsNesGame: typeof import('./src/components/JsNesGame.vue')['default']
     Key: typeof import('./src/components/Key.vue')['default']
-    NesGame: typeof import('./src/components/JsNesGame.vue')['default']
+    NESGame: typeof import('./src/components/NESGame.vue')['default']
     Record: typeof import('./src/components/Record.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Setting: typeof import('./src/components/Setting.vue')['default']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
   }
 }

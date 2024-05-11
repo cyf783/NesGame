@@ -86,7 +86,7 @@
                 <a-spin></a-spin>
                 <span>游戏加载中...</span>
               </div>
-              <JsNesGame v-if="mainStore.isReady && gameStore.isJsnes"></JsNesGame>
+              <NESGame v-if="mainStore.isReady && gameStore.isJsnes"></NESGame>
               <EJSGame v-if="mainStore.isReady && gameStore.isEmulatorJS"></EJSGame>
             </a-layout-content>
           </a-layout>
@@ -106,7 +106,7 @@ import { isElectron, removeFeature, setFeature } from '@/utils'
 import { $emit, useEventBus } from '@/hooks/useEventBus';
 import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, SIDE_BAR_WIDTH, ENTER_GAME } from '@/common/symbol';
 import { findNodeByKey } from '@/utils/tree';
-import Key from '@/components/Key.vue';
+import Setting from '@/components/Setting.vue';
 
 
 const mainStore = useMainStore()
@@ -173,7 +173,7 @@ function handleMute() {
 function handleKey() {
   Drawer.open({
     title: `配置`,
-    content: () => (h(Key)),
+    content: () => (h(Setting)),
     width: 340,
     footer: false
   });

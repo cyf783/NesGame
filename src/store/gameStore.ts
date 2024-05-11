@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import pako from "Pako";
+//@ts-ignore
+import { deflate, inflate } from "pako";
 import {
   getAttachment,
   getCurrentTime,
@@ -121,7 +122,7 @@ export const useGameStore = defineStore("GameStore", {
         });
         postAttachment(
           GAME_RECORD_ATTACHMENT + this.id + "/" + rid,
-          pako.deflate(data),
+          deflate(data),
           "text/plain"
         );
         setItem(GAME_RECORD + this.id, this.records);
@@ -137,7 +138,7 @@ export const useGameStore = defineStore("GameStore", {
               GAME_RECORD_ATTACHMENT + this.id + "/" + id
             );
             if (td) {
-              r.data = pako.inflate(td);
+              r.data = inflate(td);
               resolve(r);
             }
           }

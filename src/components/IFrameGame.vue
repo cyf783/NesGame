@@ -202,6 +202,7 @@ onMounted(() => {
     } else if (event.data.action == 'onStart') {
       gameStore.isPlaying = true;
       gameStore.loading = false;
+      game_setVolume(mainStore.volume)
     }
   }, false);
 })

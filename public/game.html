@@ -18,7 +18,7 @@
       .ejs_big_screen .ejs_volume_parent {
         display: none;
       }
-      .ejs_big_screen .ejs_menu_bar{
+      .ejs_big_screen .ejs_menu_bar {
         display: none !important;
       }
     </style>
@@ -141,6 +141,18 @@
 
             window.EJS_onGameStart = () => {
               window.parent.postMessage({ action: "onStart" }, "*");
+              // 监听键盘事件
+              document.addEventListener("keydown", function (event) {
+                // 发送按键消息到父窗口
+                window.parent.postMessage(
+                  { action: "onKey", code: event.code },
+                  "*"
+                );
+                // 阻止默认行为
+                evt.preventDefault();
+                // 阻止事件冒泡
+                evt.stopPropagation();
+              });
             };
 
             script.src = "data/loader.js";
@@ -200,11 +212,6 @@
         if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
         return "nes";
       }
-      // 监听键盘事件
-      document.addEventListener("keydown", function (event) {
-        // 发送按键消息到父窗口
-        window.parent.postMessage({ action: "onKey", code: event.code }, "*");
-      });
     </script>
   </body>
 </html>

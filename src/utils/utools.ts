@@ -107,3 +107,48 @@ export function showFolderOpenDialog() {
     properties: ["openDirectory"],
   });
 }
+export function showGameFileOpenDialog() {
+  if (!isElectron) {
+    Message.error("当前环境不支持此操作");
+    return;
+  }
+  return utools.showOpenDialog({
+    title: "选择本地游戏",
+    buttonLabel: "选择",
+    filters: [
+      {
+        name: "游戏文件",
+        extensions: [
+          "fds",
+          "nes",
+          "unif",
+          "unf",
+          "smc",
+          "fig",
+          "sfc",
+          "gd3",
+          "gd7",
+          "dx2",
+          "bsx",
+          "swc",
+          "z64",
+          "n64",
+          "pce",
+          "ngp",
+          "ngc",
+          "ws",
+          "wsc",
+          "col",
+          "cv",
+          "d64",
+          "nds",
+          "gba",
+          "gb",
+          "z64",
+          "n64",
+        ],
+      },
+    ],
+    properties: ["openFile"],
+  });
+}

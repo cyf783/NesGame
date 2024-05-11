@@ -1,9 +1,10 @@
-import { Message, Modal, Input } from "@arco-design/web-vue";
+import { Message, Modal, Input, InputSearch } from "@arco-design/web-vue";
 import { ITreeItem } from "@/types";
 import { $emit } from "@/hooks/useEventBus";
 import { REMOVE_FEATURE } from "@/common/symbol";
 import { createKey, findParent } from "@/utils/tree";
 import { useTreeStore } from "@/store";
+import { showGameFileOpenDialog } from "@/utils";
 
 const treeStore = useTreeStore();
 
@@ -21,41 +22,60 @@ export function useTreeData() {
    */
   function addFile(root: boolean = false) {
     const res = preCheck();
-    let title = "";
-    let path = "";
-    let ext = "";
-    const InputInstance = (
-      <div>
-          游戏名
-          <Input
-            defaultValue={title}
-            onInput={(value: string) => (title = value)}
-          ></Input>
-          游戏地址
-          <Input
-            defaultValue={path}
-            onInput={(value: string) => (path = value)}
-          ></Input>
-          游戏文件扩展名
-          <Input
-            defaultValue={ext}
-            onInput={(value: string) => (ext = value)}
-          ></Input>
-      </div>
-    );
+    let title = ref("");
+    let path = ref("");
+    let ext = ref("");
+    const InputInstance = h("div", [
+      h("span", "游戏名"),
+      h(Input, {
+        //@ts-ignore
+        defaultValue: title,
+        placeholder: "请输入游戏名...",
+        onInput: (v: string) => {
+          title.value = v;
+        },
+      }),
+      h("span", "游戏地址"),
+      h(InputSearch, {
+        defaultValue: path,
+        placeholder: "请输入网络地址或选择本地文件...",
+        buttonText: "选择文件",
+        searchButton: true,
+        onInput: (v: string) => {
+          path.value = v;
+        },
+        onSearch: (value: string, ev: MouseEvent) => {
+          const tmp = showGameFileOpenDialog();
+          if(tmp) {
+            path.value = tmp[0];
+            const p = path.value.split(".")
+            ext.value = p[p.length-1]
+          } 
 
+        },
+      }),
+      h("span", "游戏文件扩展名"),
+      h(Input, {
+        //@ts-ignore
+        defaultValue: ext,
+        placeholder: "请输入游戏文件扩展名...",
+        onInput: (v: string) => {
+          ext.value = v;
+        },
+      }),
+    ]);
     Modal.confirm({
       title: `添加游戏`,
       cancelText: "取消",
       content: () => InputInstance,
       onBeforeOk: (done) => {
-        if (!title) {
+        if (!title.value) {
           Message.error("游戏名不能为空");
           done(false);
           return;
         }
 
-        if (title.length > 100) {
+        if (title.value.length > 100) {
           Message.error("游戏名过长");
           done(false);
           return;
@@ -65,16 +85,16 @@ export function useTreeData() {
           done(false);
           return;
         }
-        if (!ext) {
+        if (!ext.value) {
           Message.error("游戏文件扩展名不能为空");
           done(false);
           return;
         }
         let iFileItem: ITreeItem = {
-          title: title,
-          key: createKey(path),
-          path: path,
-          ext: ext
+          title: title.value,
+          key: createKey(path.value),
+          path: path.value,
+          ext: ext.value,
         };
         if (treeStore.hasKey(iFileItem.key)) {
           Message.error("游戏地址已存在，不需要重复添加");
@@ -111,14 +131,15 @@ export function useTreeData() {
   function addFolder(root: boolean = false) {
     const res = preCheck();
     let title = "";
-    const InputInstance = (
-      <div>
-          <Input
-            defaultValue={title}
-            onInput={(value: string) => (title = value)}
-          ></Input>
-      </div>
-    );
+    const InputInstance = h("div", [
+      h(Input, {
+        defaultValue: title,
+        placeholder: "请输入分类名...",
+        onInput: (v: string) => {
+          title = v;
+        },
+      }),
+    ]);
 
     Modal.confirm({
       title: `添加分类`,
@@ -138,7 +159,7 @@ export function useTreeData() {
         }
         let iFileItem: ITreeItem = {
           title: title,
-          key: createKey(title,new Date().getTime()+""),
+          key: createKey(title, new Date().getTime() + ""),
           children: [],
         };
         if (root || !res) {

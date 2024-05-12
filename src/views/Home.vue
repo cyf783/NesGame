@@ -84,7 +84,7 @@
             <a-layout-content>
               <div class="tips" v-if="!mainStore.isReady || gameStore.loading">
                 <a-spin></a-spin>
-                <span>游戏加载中...</span>
+                <span>{{ mainStore.tips }}</span>
               </div>
               <NESGame v-if="mainStore.isReady && gameStore.isJsnes"></NESGame>
               <EJSGame v-if="mainStore.isReady && gameStore.isEmulatorJS"></EJSGame>

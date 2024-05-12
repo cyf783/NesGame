@@ -203,6 +203,9 @@ onMounted(() => {
       gameStore.isPlaying = true;
       gameStore.loading = false;
       game_setVolume(mainStore.volume)
+      mainStore.tips = "游戏加载中..."
+    } else if (event.data.action == 'onTips') {
+      mainStore.tips = event.data.tips
     }
   }, false);
 })

@@ -15,8 +15,6 @@ const nes = new jsnes.NES({
 
 addKeyboardEvent(nes);
 
-let req = new XMLHttpRequest();
-
 // 触发错误消息
 function emitError(message) {
   window.parent.postMessage({ action: "onStart" }, "*");
@@ -176,7 +174,11 @@ function loadROM() {
     start();
     return;
   }
-  req = new XMLHttpRequest();
+  const req = new XMLHttpRequest();
+  req.addEventListener('progress', (e) => {
+      const progress = e.total ? ' '+Math.floor(e.loaded / e.total * 100).toString()+'%' : ' '+(e.loaded/1048576).toFixed(2)+'MB';
+      window.parent.postMessage({ action: "onTips",tips:"下载游戏"+progress }, "*");
+  });
   req.open("GET", url);
   req.overrideMimeType("text/plain; charset=x-user-defined");
   req.timeout = 300000;

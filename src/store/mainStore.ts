@@ -15,6 +15,7 @@ export const useMainStore = defineStore("MainStore", {
     lastVolume: 80,
     isReady: false,
     isDetach: false,
+    tips:"游戏加载中..."
   }),
   actions: {
     init() {

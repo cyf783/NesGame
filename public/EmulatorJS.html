@@ -175,10 +175,12 @@
                 window.parent.postMessage({ action: "onStart" }, "*");
                 clearInterval(myInterval);
               }
-              if (!window.EJS_emulator.textElem) {
+              if (window.EJS_emulator.textElem) {
+                window.parent.postMessage({ action: "onTips",tips:window.EJS_emulator.textElem.innerText }, "*");
+              }else{
                 clearInterval(myInterval);
               }
-            }, 1000);
+            }, 100);
           } else {
             alert("Unsupported file format.");
           }

@@ -188,6 +188,9 @@ onMounted(() => {
         'p1': controlerStore.p1,
         'p2': controlerStore.p2
       })
+      mainStore.tips = "游戏加载中..."
+    } else if (event.data.action == 'onTips') {
+      mainStore.tips = event.data.tips
     }
   }, false);
 })

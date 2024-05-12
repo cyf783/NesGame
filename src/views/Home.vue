@@ -82,12 +82,7 @@
           </a-layout-header>
           <a-layout>
             <a-layout-content>
-              <div class="tips" v-if="!mainStore.isReady || gameStore.loading">
-                <a-spin></a-spin>
-                <span>{{ mainStore.tips }}</span>
-              </div>
-              <NESGame v-if="mainStore.isReady && gameStore.isJsnes"></NESGame>
-              <EJSGame v-if="mainStore.isReady && gameStore.isEmulatorJS"></EJSGame>
+              <Game/>
             </a-layout-content>
           </a-layout>
         </a-layout>
@@ -100,14 +95,14 @@
 import { Drawer, Message } from '@arco-design/web-vue';
 import { IconMenuFold, IconMenuUnfold } from '@arco-design/web-vue/es/icon'
 import { useControlerStore, useGameStore, useMainStore, useTreeStore } from '@/store'
-import SideBar from '@/components/SideBar.vue'
-import Record from '@/components/Record.vue'
 import { isElectron, removeFeature, setFeature } from '@/utils'
 import { $emit, useEventBus } from '@/hooks/useEventBus';
 import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, SIDE_BAR_WIDTH, ENTER_GAME } from '@/common/symbol';
 import { findNodeByKey } from '@/utils/tree';
+import SideBar from '@/components/SideBar.vue'
+import Record from '@/components/Record.vue'
 import Setting from '@/components/Setting.vue';
-
+import Game from '@/components/Game.vue';
 
 const mainStore = useMainStore()
 const gameStore = useGameStore();
@@ -120,14 +115,6 @@ let lastSplitSize = splitSizeRef.value
 watch(() => splitSizeRef.value, (newVal, oldVal) => {
   const s = (newVal + "").replace('px', "")
   $emit(SIDE_BAR_WIDTH, parseInt(s));
-})
-
-watch(() => gameStore.lastCore, (newVal, oldVal) => {
-  if (newVal) {
-    gameStore.isPlaying = false;
-    gameStore.loading = true;
-    gameStore.saveCore()
-  }
 })
 
 // 卸载时更新状态库
@@ -297,22 +284,6 @@ function handleFeatureClick() {
   }
 }
 
-.tips {
-  width: 100%;
-  height: calc(100vh - 48px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #999;
-  font-size: 1.2rem;
-  background: #000;
-
-  &>span {
-    margin-left: 0.5rem;
-  }
-}
-
-
 .viewer-container {
   height: calc(100vh - 44px); // 减去标题栏的高度
   background-color: var(--c-bg-color);
@@ -332,12 +303,17 @@ function handleFeatureClick() {
     }
   }
 }
+
 .text-ellipsis {
-  white-space: nowrap; /* 确保文本在一行内显示 */
-  overflow: hidden; /* 超出容器部分隐藏 */
-  text-overflow: ellipsis; /* 使用省略号表示文本超出 */
+  white-space: nowrap;
+  /* 确保文本在一行内显示 */
+  overflow: hidden;
+  /* 超出容器部分隐藏 */
+  text-overflow: ellipsis;
+  /* 使用省略号表示文本超出 */
 }
-.top-action{
+
+.top-action {
   padding: 0 10px;
 }
 </style>,

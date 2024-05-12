@@ -43,7 +43,7 @@ window.JSNES.setVolume = (v) => {
 
 // 游戏停止
 let isStop = true;
-window.JSNES.stop = () => {
+const stop = () => {
   if (isStop) {
     return;
   }

@@ -30,3 +30,15 @@ export interface IGameRuntimeExtend extends IGame {
   loading: boolean;
   core: string;
 }
+
+export interface IGameHandler {
+  loadRecord: Function;
+  saveRecord: Function;
+  setKeys: Function;
+  reset: Function;
+  play: Function;
+  pause: Function;
+  setVolume: Function;
+  openGamepad: Function;
+  openCheat: Function;
+}

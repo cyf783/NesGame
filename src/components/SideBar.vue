@@ -21,6 +21,33 @@
           <icon-edit />
         </template>
       </a-button>
+      <a-dropdown show-arrow :style="{ display: 'block' }" >
+        <a-button title="备份恢复仓库">
+          <template #icon>
+            <icon-storage />
+          </template>
+        </a-button>
+        <template #content>
+          <a-doption @click="handleBackup">
+            <template #icon>
+              <icon-export />
+            </template>
+            <template #default>备份仓库</template>
+          </a-doption>
+          <a-doption @click="handleRestore">
+            <template #icon>
+              <icon-import />
+            </template>
+            <template #default>恢复仓库</template>
+          </a-doption>
+          <a-doption @click="handleReset">
+            <template #icon>
+              <icon-refresh />
+            </template>
+            <template #default>重置仓库</template>
+          </a-doption>
+        </template>
+      </a-dropdown>
       <a-button :title="treeStore.expandedKeys.length ? '折叠' : '展开'" @click="toggleExpanded">
         <template #icon>
           <icon-double-up v-if="treeStore.expandedKeys.length" />
@@ -104,7 +131,7 @@ import { collectAllParentKeys, findNodeByKey } from '@/utils/tree'
 const gameStore = useGameStore()
 const treeStore = useTreeStore();
 
-const { addFile, addFolder, handleDelete, handleRename } = useTreeData()
+const { addFile, addFolder, handleDelete, handleRename, handleBackup, handleRestore, handleReset } = useTreeData()
 const { drop } = useTreeDrag()
 
 /**
@@ -157,7 +184,7 @@ watch(() => treeStore.data, (newVal, oldVal) => {
   if (!findNodeByKey(treeStore.selected!.key, treeStore.data)) {
     gameStore.init()
     treeStore.selected = {
-      title: gameStore.title, 
+      title: gameStore.title,
       path: gameStore.path,
       key: gameStore.id,
       ext: gameStore.ext,

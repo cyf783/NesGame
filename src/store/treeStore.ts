@@ -1,5 +1,5 @@
-import { GAME_LIST } from "@/data/games";
-import { ITreeItem } from "@/types";
+import { GAME_DEFAULT, GAME_LIST } from "@/data/games";
+import { ITreeBase, ITreeItem } from "@/types";
 import { getItem, setItem } from "@/utils";
 import { GAME_TREE_DATA } from "@/utils/constant";
 import { createKey, filterNode } from "@/utils/tree";
@@ -49,30 +49,61 @@ export const useTreeStore = defineStore("TreeStore", {
       if (treeDataDb) {
         this.data = treeDataDb;
       } else {
-        const _treeData: ITreeItem[] = [];
-        for (const key in GAME_LIST) {
-          if (GAME_LIST.hasOwnProperty(key)) {
-            const c = {
-              key: createKey(key),
-              title: key,
-              children: [] as ITreeItem[],
-            };
-            //@ts-ignore
-            for (let i = 0; i < GAME_LIST[key].length; i++) {
-              //@ts-ignore
-              const g = GAME_LIST[key][i];
-              c.children.push({
-                key: createKey(g[1]),
-                title: g[0],
-                path: g[1],
-              });
-            }
-            _treeData.push(c);
-          }
-        }
-        this.data = _treeData;
-        this.saveDB();
+        this.reset();
       }
+    },
+    reset() {
+      const _treeData: ITreeItem[] = [];
+      for (const key in GAME_LIST) {
+        if (GAME_LIST.hasOwnProperty(key)) {
+          const c = {
+            key: createKey(key),
+            title: key,
+            children: [] as ITreeItem[],
+          };
+          //@ts-ignore
+          for (let i = 0; i < GAME_LIST[key].length; i++) {
+            //@ts-ignore
+            const g = GAME_LIST[key][i];
+            c.children.push({
+              key: createKey(g[1]),
+              title: g[0],
+              path: g[1],
+              ext: GAME_DEFAULT.ext,
+            });
+          }
+          _treeData.push(c);
+        }
+      }
+      this.data = _treeData;
+      this.saveDB();
+    },
+    restory(data: ITreeBase[]) {
+      const loop = (data: ITreeBase[]): any => {
+        if (data) {
+          const res = data.map((item) => {
+            if (item.children) {
+              return {
+                key: createKey(item.title),
+                title: item.title,
+                children: loop(item.children),
+              };
+            } else {
+              return {
+                //@ts-ignore
+                key: createKey(item.path),
+                title: item.title,
+                path: item.path,
+                ext: item.ext ? item.ext : GAME_DEFAULT.ext,
+              };
+            }
+          });
+          return res;
+        }
+      };
+      const res = loop(data);
+      this.data = res;
+      this.saveDB();
     },
     expandedAll() {
       this.expandedKeys = this.allExpandedKeys;

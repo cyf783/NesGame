@@ -152,3 +152,20 @@ export function showGameFileOpenDialog() {
     properties: ["openFile"],
   });
 }
+export function showBackupFileOpenDialog() {
+  if (!isElectron) {
+    Message.error("当前环境不支持此操作");
+    return;
+  }
+  return utools.showOpenDialog({
+    title: "选择本地仓库文本",
+    buttonLabel: "选择",
+    filters: [
+      {
+        name: "红白机仓库",
+        extensions: ["json"],
+      },
+    ],
+    properties: ["openFile"],
+  });
+}

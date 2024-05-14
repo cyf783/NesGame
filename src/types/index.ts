@@ -1,9 +1,12 @@
-export interface ITreeItem {
+export interface ITreeBase {
   title: string;
-  key: string;
   path?: string;
   ext?: string;
   children?: ITreeItem[];
+}
+
+export interface ITreeItem extends ITreeBase {
+  key: string;
 }
 
 export interface IGame {

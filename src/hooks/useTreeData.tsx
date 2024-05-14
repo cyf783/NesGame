@@ -4,7 +4,8 @@ import { $emit } from "@/hooks/useEventBus";
 import { REMOVE_FEATURE } from "@/common/symbol";
 import { createKey, findParent } from "@/utils/tree";
 import { useTreeStore } from "@/store";
-import { showGameFileOpenDialog } from "@/utils";
+import { showBackupFileOpenDialog, showGameFileOpenDialog } from "@/utils";
+import { GAME_DEFAULT } from "@/data/games";
 
 const treeStore = useTreeStore();
 
@@ -49,7 +50,7 @@ export function useTreeData() {
           if (tmp) {
             path.value = tmp[0];
             const t = path.value.split(/\\|\//).pop();
-            if(t){
+            if (t) {
               const p = t.split(".");
               ext.value = p[p.length - 1];
               title.value = p[0];
@@ -83,7 +84,7 @@ export function useTreeData() {
           done(false);
           return;
         }
-        if (!path) {
+        if (!path.value) {
           Message.error("游戏地址不能为空");
           done(false);
           return;
@@ -393,10 +394,122 @@ export function useTreeData() {
     });
   }
 
+  function handleBackup() {
+    const loop = (data: ITreeItem[]): any => {
+      if (data) {
+        const res = data.map((item) => {
+          if (item.children) {
+            return {
+              title: item.title,
+              children: loop(item.children),
+            };
+          } else {
+            return {
+              title: item.title,
+              path: item.path,
+              ext: item.ext ? item.ext : GAME_DEFAULT.ext,
+            };
+          }
+        });
+        return res;
+      }
+    };
+    const res = loop(treeStore.data);
+    if (res) {
+      let blob = new Blob([JSON.stringify(res)], { type: "application/json" });
+      if (blob) {
+        let a = document.createElement("a");
+        a.download = "红白机仓库.json";
+        a.href = window.URL.createObjectURL(blob);
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    }
+  }
+
+  function handleRestore() {
+    let path = ref("");
+    const InputInstance = h("div", [
+      h(InputSearch, {
+        defaultValue: path,
+        placeholder: "请输入网络地址或选择本地文件...",
+        buttonText: "选择文件",
+        searchButton: true,
+        onInput: (v: string) => {
+          path.value = v;
+        },
+        onSearch: (value: string, ev: MouseEvent) => {
+          const tmp = showBackupFileOpenDialog();
+          if (tmp) {
+            path.value = tmp[0];
+          }
+        },
+      }),
+    ]);
+    Modal.confirm({
+      title: `恢复仓库数据`,
+      cancelText: "取消",
+      content: () => InputInstance,
+      onBeforeOk: (done) => {
+        if (!path.value) {
+          Message.error("仓库地址不能为空");
+          done(false);
+          return;
+        }
+        fetch(path.value)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("请求网络出错");
+            }
+            return response.blob();
+          })
+          .then((blob) => {
+            let reader = new FileReader();
+            reader.onload = function () {
+              try {
+                let jsonObject = JSON.parse(reader.result as string);
+                console.log(jsonObject);
+                treeStore.restory(jsonObject);
+                Message.success("仓库数据恢复成功");
+                done(true);
+              } catch (error) {
+                done(false);
+                Message.error("仓库数据恢复出错：请检查数据格式");
+              }
+            };
+            reader.onerror = () => {
+              done(false);
+              Message.error("仓库数据恢复出错：" + reader.error);
+            }; // 处理错误
+            reader.readAsText(blob);
+          })
+          .catch((error) => {
+            done(false);
+            Message.error("仓库数据恢复出错：" + error);
+          });
+      },
+    });
+  }
+  function handleReset() {
+    Modal.confirm({
+      title: `重置仓库`,
+      cancelText: "取消",
+      content: () => "重置后所有数据将丢失，是否继续？",
+      onBeforeOk: (done) => {
+        treeStore.reset();
+        Message.success("重置成功");
+        done(true);
+      },
+    });
+  }
+
   return {
     addFile,
     addFolder,
     handleDelete,
     handleRename,
+    handleBackup,
+    handleRestore,
+    handleReset,
   };
 }

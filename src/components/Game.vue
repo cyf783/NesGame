@@ -11,7 +11,7 @@ import { ref } from 'vue'
 import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
-import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, GAME_EMULATORJS_GAMEPAD, GAME_EMULATORJS_CHEAT } from '@/common/symbol';
+import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, GAME_EMULATORJS_GAMEPAD, GAME_EMULATORJS_CHEAT, GAME_CHEAT_PARSE, GAME_CHEAT_DISABLE } from '@/common/symbol';
 import { IGameHandler, IGameRecord } from '@/types';
 import { useNes } from '@/hooks/useNes';
 import { useEjs } from '@/hooks/useEjs';
@@ -126,6 +126,18 @@ useEventBus(GAME_EMULATORJS_GAMEPAD, () => {
 useEventBus(GAME_EMULATORJS_CHEAT, () => {
   if (gameCoreHandler) {
     gameCoreHandler.openCheat();
+  }
+})
+
+useEventBus(GAME_CHEAT_PARSE, (code:string) => {
+  if (gameCoreHandler) {
+    gameCoreHandler.cheatParse(code);
+  }
+})
+
+useEventBus(GAME_CHEAT_DISABLE, (code:string) => {
+  if (gameCoreHandler) {
+    gameCoreHandler.cheatDisable(code);
   }
 })
 

@@ -50,5 +50,11 @@ export const useNes = (core: any): IGameHandler => {
     },
     openCheat: () => {
     },
+    cheatParse: (code:string) => {
+      core.window.JSNES.cheat.parse(code)
+    },
+    cheatDisable: (code:string) => {
+      core.window.JSNES.cheat.disable(code)
+    },
   };
 };

@@ -10,8 +10,9 @@ import {
   removeItem,
   setItem,
 } from "@/utils";
-import { IGameRecord, IGameRuntimeExtend, ITreeItem } from "@/types";
+import { IGameCheat, IGameRecord, IGameRuntimeExtend, ITreeItem } from "@/types";
 import {
+  GAME_CHEAT,
   GAME_CORE,
   GAME_CORE_EMULATOR_JS,
   GAME_CORE_JSNES,
@@ -32,6 +33,7 @@ export const useGameStore = defineStore("GameStore", {
       loading: true,
       core: GAME_CORE_EMULATOR_JS,
       records: [],
+      cheats: [],
 
       id: GAME_DEFAULT.id,
       title: GAME_DEFAULT.title,
@@ -86,12 +88,14 @@ export const useGameStore = defineStore("GameStore", {
         return;
       }
       const _r = getItem(GAME_RECORD + game.key);
+      const _c = getItem(GAME_CHEAT + game.key);
       this.$patch({
         id: game.key,
         title: game.title,
         path: game.path,
         ext: game.ext ? game.ext : GAME_DEFAULT.ext,
         records: _r ? _r : [],
+        cheats: _c ? _c : [],
       });
       setItem(GAME_LAST, game);
       const features = getFeatures();
@@ -100,6 +104,35 @@ export const useGameStore = defineStore("GameStore", {
         this.isFeature = r.length > 0;
       }
       this.loading = true;
+    },
+    addCheat(title:string,code:string){
+      for (let i = this.cheats.length - 1; i >= 0; i--) {
+        if (this.cheats[i].code === code) {
+          return false;
+        }
+      }
+      this.cheats.push({
+        title: title,
+        code: code,
+        running: false
+      });
+      const cs = [] as IGameCheat[];
+      for (let i = this.cheats.length - 1; i >= 0; i--) {
+        cs.push({
+          title: this.cheats[i].title,
+          code: this.cheats[i].code,
+        });
+      }
+      setItem(GAME_CHEAT + this.id, cs);
+      return true;
+    },
+    removeCheat(code:string){
+      for (let i = this.cheats.length - 1; i >= 0; i--) {
+        if (this.cheats[i].code === code) {
+          this.cheats.splice(i, 1);
+        }
+      }
+      setItem(GAME_CHEAT + this.id, this.cheats);
     },
     saveRecord(data: Uint8Array, img: string, coreType: string) {
       return new Promise((resolve) => {

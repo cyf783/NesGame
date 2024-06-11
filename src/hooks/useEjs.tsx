@@ -77,5 +77,9 @@ export const useEjs = (core: any): IGameHandler => {
     openCheat: () => {
       core.window.EJS_emulator.cheatMenu.style.display = "";
     },
+    cheatParse: () => {
+    },
+    cheatDisable: () => {
+    },
   };
 };

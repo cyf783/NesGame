@@ -21,7 +21,7 @@
       .ejs_big_screen .ejs_menu_bar {
         display: none !important;
       }
-      .ejs_loading_text{
+      .ejs_loading_text {
         bottom: 49% !important;
       }
     </style>
@@ -171,13 +171,22 @@
               );
             }, 2000);
             var myInterval = setInterval(() => {
-              if (window.EJS_emulator.textElem&&window.EJS_emulator.textElem.style.color == "red") {
+              if (
+                window.EJS_emulator.textElem &&
+                window.EJS_emulator.textElem.style.color == "red"
+              ) {
                 window.parent.postMessage({ action: "onStart" }, "*");
                 clearInterval(myInterval);
               }
               if (window.EJS_emulator.textElem) {
-                window.parent.postMessage({ action: "onTips",tips:window.EJS_emulator.textElem.innerText }, "*");
-              }else{
+                window.parent.postMessage(
+                  {
+                    action: "onTips",
+                    tips: window.EJS_emulator.textElem.innerText,
+                  },
+                  "*"
+                );
+              } else {
                 clearInterval(myInterval);
               }
             }, 100);
@@ -219,6 +228,8 @@
         if (["col", "cv", "coleco"].includes(ext)) return "coleco";
 
         if (["d64", "vice_x64"].includes(ext)) return "vice_x64";
+
+        if (["arcade"].includes(ext)) return "arcade";
 
         if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
         return "nes";

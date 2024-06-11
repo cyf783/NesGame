@@ -17,6 +17,9 @@ export const GAME_STOP = Symbol("GAME_STOP");
 export const GAME_TOGGLE_PLAY = Symbol("GAME_TOGGLE_PLAY");
 export const GAME_EMULATORJS_GAMEPAD = Symbol("GAME_EMULATORJS_GAMEPAD");
 export const GAME_EMULATORJS_CHEAT = Symbol("GAME_EMULATORJS_CHEAT");
+export const GAME_CHEAT_PARSE = Symbol("GAME_CHEAT_PARSE");
+export const GAME_CHEAT_DISABLE = Symbol("GAME_CHEAT_DISABLE");
+
 
 export const SIDE_BAR_WIDTH = Symbol("SIDE_BAR_WIDTH");
 

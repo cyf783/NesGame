@@ -16,6 +16,15 @@ export interface IGame {
   ext: string;
 }
 
+export interface IGameCheat {
+  title: string;
+  code: string;
+}
+
+export interface IGameCheatRuntimeExtend extends IGameCheat {
+  running: boolean;
+}
+
 export interface IGameRecord {
   id: string;
   img: string;
@@ -29,6 +38,7 @@ export interface IGameRuntimeExtend extends IGame {
   isEmpty: boolean;
   isFeature: boolean;
   records: IGameRecord[];
+  cheats: IGameCheatRuntimeExtend[];
   isPlaying: boolean;
   loading: boolean;
   core: string;
@@ -44,4 +54,6 @@ export interface IGameHandler {
   setVolume: Function;
   openGamepad: Function;
   openCheat: Function;
+  cheatParse: Function;
+  cheatDisable: Function;
 }

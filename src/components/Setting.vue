@@ -1,6 +1,31 @@
 <template>
   <div class="game-record">
     <div class="header" v-if="gameStore.isJsnes">
+      <h3>金手指</h3>
+    </div>
+    <a-table :data="gameStore.cheats" :pagination="false" v-if="gameStore.isJsnes">
+      <template #columns>
+        <a-table-column :width="62" title="启用">
+          <template #cell="{ record }">
+            <a-switch size="small" @change="handleCheatOnOff(record, $event)" v-model="record.running" />
+          </template>
+        </a-table-column>
+        <a-table-column title="名称" data-index="title"></a-table-column>
+        <a-table-column :width="50">
+          <template #title>
+            <a-button size="mini" shape="circle" @click="handleAddCheat">
+              <icon-plus />
+            </a-button>
+          </template>
+          <template #cell="{ record }">
+            <a-button size="mini" shape="circle" @click="handleRemoveCheat(record)">
+              <icon-delete />
+            </a-button>
+          </template>
+        </a-table-column>
+      </template>
+    </a-table>
+    <div class="header" v-if="gameStore.isJsnes">
       <h3>玩家P1</h3>
     </div>
     <a-table :data="controlerStore.getP1Key" :pagination="false" v-if="gameStore.isJsnes">
@@ -55,9 +80,15 @@
 </template>
 
 <script setup lang="ts">
-import { GAME_EMULATORJS_CHEAT, GAME_EMULATORJS_GAMEPAD } from '@/common/symbol';
+import {
+  IconDelete,
+  IconPlus,
+} from "@arco-design/web-vue/es/icon";
+import { GAME_CHEAT_DISABLE, GAME_CHEAT_PARSE, GAME_EMULATORJS_CHEAT, GAME_EMULATORJS_GAMEPAD } from '@/common/symbol';
 import { $emit } from '@/hooks/useEventBus';
 import { useControlerStore, useGameStore } from '@/store';
+import { IGameCheat } from '@/types';
+import { Input, Message, Modal } from '@arco-design/web-vue';
 
 const controlerStore = useControlerStore()// 控制器映射 pinia
 const gameStore = useGameStore()
@@ -77,16 +108,92 @@ function handleGamepad(event: any) {
   $emit(GAME_EMULATORJS_GAMEPAD);
   const closeButton = document.querySelector('.arco-drawer-close-btn');
   //@ts-ignore
-  closeButton&&closeButton.click();
+  closeButton && closeButton.click();
 }
 
 function handleCheat(event: any) {
   $emit(GAME_EMULATORJS_CHEAT);
   const closeButton = document.querySelector('.arco-drawer-close-btn');
   //@ts-ignore
-  closeButton&&closeButton.click();
+  closeButton && closeButton.click();
 }
 
+function handleAddCheat() {
+  let title = "";
+  let code = "";
+  const InputInstance = h("div", [
+    h("span", "名称"),
+    h(Input, {
+      defaultValue: title,
+      placeholder: "请输入名称...",
+      onInput: (v: string) => {
+        title = v;
+      },
+    }),
+    h("span", "代码"),
+    h(Input, {
+      defaultValue: code,
+      placeholder: "请输入代码...（示例：0045-01-02）",
+      onInput: (v: string) => {
+        code = v;
+      },
+    }),
+  ]);
+
+  Modal.confirm({
+    title: `添加金手指`,
+    cancelText: "取消",
+    content: () => InputInstance,
+    onBeforeOk: (done) => {
+      if (!title) {
+        Message.error("名称不能为空");
+        done(false);
+        return;
+      }
+
+      if (title.length > 100) {
+        Message.error("名称过长");
+        done(false);
+        return;
+      }
+
+      if (!code) {
+        Message.error("代码不能为空");
+        done(false);
+        return;
+      }
+      if (gameStore.addCheat(title, code)) {
+        Message.success("添加成功");
+        done(true);
+      } else {
+        Message.error("代码重复");
+        done(false);
+      }
+    },
+  });
+}
+
+function handleRemoveCheat(cheat: IGameCheat) {
+  Modal.warning({
+    title: "是否删除代码？",
+    content: "删除后无法恢复",
+    hideCancel: false,
+    cancelText: "取消",
+    onOk() {
+      $emit(GAME_CHEAT_DISABLE, cheat.code);
+      gameStore.removeCheat(cheat.code);
+    },
+  });
+}
+
+
+function handleCheatOnOff(cheat: IGameCheat, value: string | number | boolean) {
+  if (value) {
+    $emit(GAME_CHEAT_PARSE, cheat.code);
+  } else {
+    $emit(GAME_CHEAT_DISABLE, cheat.code);
+  }
+}
 </script>
 
 <style lang="less" scoped>

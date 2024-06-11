@@ -146,6 +146,7 @@ export function showGameFileOpenDialog() {
           "gb",
           "z64",
           "n64",
+          "zip",
         ],
       },
     ],

@@ -101,3 +101,5 @@ class Cheat {
 }
 
 const cheat = new Cheat()
+
+window.JSNES.cheat = cheat;

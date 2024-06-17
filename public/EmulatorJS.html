@@ -58,7 +58,7 @@
             window.EJS_gameName = parts.shift();
             window.EJS_biosUrl = "";
             window.EJS_gameUrl = romLink;
-            window.EJS_core = core;
+            window.EJS_core = core=='nes'?'nestopia':core;
             window.EJS_pathtodata = "emulator_js/";
             window.EJS_startOnLoaded = true;
             window.EJS_backgroundColor = "#000";
@@ -87,6 +87,14 @@
                   0: {
                     value: "j",
                     value2: "BUTTON_2",
+                  },
+                  9: {
+                    value: "i",
+                    value2: "BUTTON_3",
+                  },
+                  1: {
+                    value: "u",
+                    value2: "BUTTON_4",
                   },
                   2: {
                     value: "space",
@@ -119,6 +127,12 @@
                   },
                   0: {
                     value: "numpad 4",
+                  },
+                  9: {
+                    value: "numpad 8",
+                  },
+                  1: {
+                    value: "numpad 7",
                   },
                   2: {
                     value: "space",

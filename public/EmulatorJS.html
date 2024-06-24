@@ -245,7 +245,9 @@
 
         if (["arcade"].includes(ext)) return "arcade";
 
-        if (["nds", "gba", "gb", "z64", "n64"].includes(ext)) return ext;
+        if (["gbc", "gb"].includes(ext)) return "gb";
+
+        if (["nds", "gba", "z64", "n64"].includes(ext)) return ext;
         return "nes";
       }
     </script>

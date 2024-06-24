@@ -143,6 +143,7 @@ export function showGameFileOpenDialog() {
           "d64",
           "nds",
           "gba",
+          "gbc",
           "gb",
           "z64",
           "n64",

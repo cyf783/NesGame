@@ -12,7 +12,11 @@ window.exports = {
       enter: (action) => {
         window.utools.hideMainWindow()
         try {
-          ubWindow.show();
+          if(ubWindow.isVisible()){
+            ubWindow.hide();
+          }else{
+            ubWindow.show();
+          }
           window.utools.outPlugin()
         } catch (error) {
           let url = "./index.html"

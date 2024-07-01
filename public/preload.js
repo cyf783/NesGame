@@ -47,6 +47,10 @@ ipcRenderer.on("setOpacity", (event, data) => {
   ubWindow.setOpacity(data)
 });
 
+ipcRenderer.on("setAlwaysOnTop", (event, data) => {
+  ubWindow.setAlwaysOnTop(data, 'pop-up-menu');
+});
+
 ipcRenderer.on("senderId", (event, data) => {
   window.senderId = event.senderId;
 });

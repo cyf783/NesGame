@@ -15,9 +15,10 @@ export const useMainStore = defineStore("MainStore", {
     volume: 80,
     lastVolume: 80,
     transparent: 100,
+    alwaysOnTop: false,
     isReady: false,
     isDetach: true,
-    tips:"游戏加载中..."
+    tips: "游戏加载中...",
   }),
   actions: {
     init() {
@@ -52,6 +53,9 @@ export const useMainStore = defineStore("MainStore", {
         this.volume = this.lastVolume ? this.lastVolume : 80;
       }
       this.saveGain();
+    },
+    setOnTop() {
+      this.alwaysOnTop = !this.alwaysOnTop;
     },
     saveGain() {
       setItem(GAME_VOLUME, this.volume);

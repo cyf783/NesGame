@@ -27,4 +27,5 @@ p0: {
     PAUSE: "KeyP",
     RESET: "KeyR",
     MUTE: "KeyV",
+    ON_TOP: "KeyT",
 }

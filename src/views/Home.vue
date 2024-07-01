@@ -44,13 +44,15 @@
               </ATooltip>
 
               <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]">
-                <a-button class="menu-btn top-action" @click="handleMute" :title="'静音<' + controlerStore.getVolumeKey + '>'">
+                <a-button class="menu-btn top-action" @click="handleMute"
+                  :title="'静音<' + controlerStore.getVolumeKey + '>'">
                   <icon-mute v-if="mainStore.volume == 0" />
                   <icon-sound v-else />
                 </a-button>
                 <template #content>
                   <div class="demo-arrow">
-                    <a-slider :style="{ width: '100%' }" v-model="mainStore.volume" :format-tooltip="volumeformatter" @change="mainStore.saveGain" />
+                    <a-slider :style="{ width: '100%' }" v-model="mainStore.volume" :format-tooltip="volumeformatter"
+                      @change="mainStore.saveGain" />
                   </div>
                 </template>
               </a-trigger>
@@ -61,10 +63,17 @@
                 </a-button>
                 <template #content>
                   <div class="demo-arrow">
-                    <a-slider v-model="mainStore.transparent" :min='5' :style="{ width: '100%' }" :format-tooltip="transparentFormatter" @change="mainStore.saveTransparent"/>
+                    <a-slider v-model="mainStore.transparent" :min='5' :style="{ width: '100%' }"
+                      :format-tooltip="transparentFormatter" @change="mainStore.saveTransparent" />
                   </div>
                 </template>
               </a-trigger>
+              <ATooltip mini :content="(mainStore.alwaysOnTop ? '取消置顶' : '置顶' + '<' + controlerStore.getOnTopKey + '>')"
+                v-show="isElectron">
+                <a-button class="menu-btn top-action" @click="handleOnTop" :class="mainStore.alwaysOnTop ? 'on-top' : null">
+                  <icon-to-top />
+                </a-button>
+              </ATooltip>
               <ATooltip mini :content="'配置'" v-show="isElectron">
                 <a-button class="menu-btn top-action" @click="handleKey">
                   <icon-robot />
@@ -85,7 +94,7 @@
           </a-layout-header>
           <a-layout>
             <a-layout-content>
-              <Game/>
+              <Game />
             </a-layout-content>
           </a-layout>
         </a-layout>
@@ -105,7 +114,7 @@ import SideBar from '@/components/SideBar.vue'
 import Record from '@/components/Record.vue'
 import Setting from '@/components/Setting.vue';
 import Game from '@/components/Game.vue';
-import { setOpacity } from '@/preload';
+import { setAlwaysOnTop, setOpacity } from '@/preload';
 
 const mainStore = useMainStore()
 const gameStore = useGameStore();
@@ -120,7 +129,11 @@ watch(() => splitSizeRef.value, (newVal, oldVal) => {
 })
 
 watch(() => mainStore.transparent, (newVal, oldVal) => {
-  setOpacity(newVal/100)
+  setOpacity(newVal / 100)
+})
+
+watch(() => mainStore.alwaysOnTop, (newVal, oldVal) => {
+  setAlwaysOnTop(newVal)
 })
 
 // 卸载时更新状态库
@@ -170,6 +183,9 @@ function handleSaveRecord() {
 function handleMute() {
   mainStore.mute();
 }
+function handleOnTop() {
+  mainStore.setOnTop();
+}
 
 function handleKey() {
   Drawer.open({
@@ -187,6 +203,10 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.on-top {
+  color: var(--primary-color);
+}
+
 .demo-arrow {
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
   padding: 10px;

@@ -34,6 +34,7 @@ import {
   IconStorage,
   IconEye,
   IconEyeInvisible,
+  IconToTop,
 } from "@arco-design/web-vue/es/icon";
 
 const icons = [
@@ -71,6 +72,7 @@ const icons = [
   IconMute,
   IconHistory,
   IconStorage,
+  IconToTop,
 ];
 
 export function registerIcon(app: App) {

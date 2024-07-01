@@ -159,6 +159,9 @@ function systemControlEvent(e: KeyboardEvent) {
     case controlerStore.p0.MUTE:
       mainStore.mute()
       break
+    case controlerStore.p0.ON_TOP:
+      mainStore.setOnTop()
+      break
     default:
       break
   }
@@ -182,6 +185,9 @@ onMounted(() => {
           break
         case controlerStore.p0.MUTE:
           mainStore.mute()
+          break
+        case controlerStore.p0.ON_TOP:
+          mainStore.setOnTop()
           break
         default:
           break

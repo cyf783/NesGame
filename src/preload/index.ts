@@ -3,6 +3,7 @@ declare global {
     preload: {
       setOpacity: (data: number) => void;
       setAlwaysOnTop: (data: boolean) => void;
+      gamePause: () => void;
     };
   }
 }

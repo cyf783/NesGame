@@ -10,11 +10,15 @@ const setAlwaysOnTop = (data) => {
 };
 
 ipcRenderer.on("senderId", (event, data) => {
-  console.log(event.senderId)
   window.senderId = event.senderId;
+});
+
+ipcRenderer.on("gamePause", (event, data) => {
+  window.preload.gamePause();
 });
 
 window.preload = {
   setOpacity,
-  setAlwaysOnTop
+  setAlwaysOnTop,
+  gamePause:()=>{}
 }

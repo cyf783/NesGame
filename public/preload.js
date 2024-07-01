@@ -13,6 +13,7 @@ window.exports = {
         window.utools.hideMainWindow()
         try {
           if(ubWindow.isVisible()){
+            ipcRenderer.sendTo(ubWindow.webContents.id, "gamePause")
             ubWindow.hide();
           }else{
             ubWindow.show();
@@ -53,8 +54,4 @@ ipcRenderer.on("setOpacity", (event, data) => {
 
 ipcRenderer.on("setAlwaysOnTop", (event, data) => {
   ubWindow.setAlwaysOnTop(data, 'pop-up-menu');
-});
-
-ipcRenderer.on("senderId", (event, data) => {
-  window.senderId = event.senderId;
 });

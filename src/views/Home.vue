@@ -44,27 +44,30 @@
               </ATooltip>
 
               <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]">
-                <ATooltip mini :content="'音量<' + controlerStore.getVolumeKey + '>'" v-show="isElectron">
-                  <a-button class="menu-btn top-action" @click="handleMute">
-                    <icon-mute v-if="mainStore.volume == 0" />
-                    <icon-sound v-else />
-                  </a-button>
-                </ATooltip>
+                <a-button class="menu-btn top-action" @click="handleMute" :title="'静音<' + controlerStore.getVolumeKey + '>'">
+                  <icon-mute v-if="mainStore.volume == 0" />
+                  <icon-sound v-else />
+                </a-button>
                 <template #content>
                   <div class="demo-arrow">
-                    <a-slider :style="{ width: '100%' }" v-model="mainStore.volume" @change="mainStore.saveGain" />
+                    <a-slider :style="{ width: '100%' }" v-model="mainStore.volume" :format-tooltip="volumeformatter" @change="mainStore.saveGain" />
+                  </div>
+                </template>
+              </a-trigger>
+              <a-trigger trigger="hover" show-arrow :popup-translate="[0, 10]">
+                <a-button class="menu-btn top-action" title="透明度">
+                  <icon-eye-invisible v-if="mainStore.transparent == 0" />
+                  <icon-eye v-else />
+                </a-button>
+                <template #content>
+                  <div class="demo-arrow">
+                    <a-slider v-model="mainStore.transparent" :min='5' :style="{ width: '100%' }" :format-tooltip="transparentFormatter" @change="mainStore.saveTransparent"/>
                   </div>
                 </template>
               </a-trigger>
               <ATooltip mini :content="'配置'" v-show="isElectron">
                 <a-button class="menu-btn top-action" @click="handleKey">
                   <icon-robot />
-                </a-button>
-              </ATooltip>
-              <ATooltip mini :content="gameStore.isFeature ? '移除全局关键字' : '添加游戏关键字'" v-show="isElectron">
-                <a-button class="menu-btn top-action" @click="handleFeatureClick">
-                  <icon-share-external v-if="gameStore.isFeature" :style="{ color: '#1a73e8' }" />
-                  <icon-share-external v-else />
                 </a-button>
               </ATooltip>
               <ATooltip mini content="存档" v-show="isElectron">
@@ -92,21 +95,20 @@
 </template>
 
 <script setup lang="ts">
-import { Drawer, Message } from '@arco-design/web-vue';
+import { Drawer } from '@arco-design/web-vue';
 import { IconMenuFold, IconMenuUnfold } from '@arco-design/web-vue/es/icon'
-import { useControlerStore, useGameStore, useMainStore, useTreeStore } from '@/store'
-import { isElectron, removeFeature, setFeature } from '@/utils'
-import { $emit, useEventBus } from '@/hooks/useEventBus';
-import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, SIDE_BAR_WIDTH, ENTER_GAME } from '@/common/symbol';
-import { findNodeByKey } from '@/utils/tree';
+import { useControlerStore, useGameStore, useMainStore } from '@/store'
+import { isElectron } from '@/utils'
+import { $emit } from '@/hooks/useEventBus';
+import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, SIDE_BAR_WIDTH } from '@/common/symbol';
 import SideBar from '@/components/SideBar.vue'
 import Record from '@/components/Record.vue'
 import Setting from '@/components/Setting.vue';
 import Game from '@/components/Game.vue';
+import { setOpacity } from '@/preload';
 
 const mainStore = useMainStore()
 const gameStore = useGameStore();
-const treeStore = useTreeStore();
 const controlerStore = useControlerStore()// 控制器映射 pinia
 const sideBarCollapsed = ref(false)
 const splitSizeRef = ref<string | number>('220')
@@ -117,9 +119,21 @@ watch(() => splitSizeRef.value, (newVal, oldVal) => {
   $emit(SIDE_BAR_WIDTH, parseInt(s));
 })
 
+watch(() => mainStore.transparent, (newVal, oldVal) => {
+  setOpacity(newVal/100)
+})
+
 // 卸载时更新状态库
 onUnmounted(() => {
 })
+
+function volumeformatter(value: number) {
+  return `音量${value}%`
+};
+
+function transparentFormatter(value: number) {
+  return `透明度${value}%`
+};
 
 /**
  * 侧边栏折叠状态变化时触发
@@ -167,41 +181,8 @@ function handleKey() {
 }
 
 onMounted(() => {
-  init()
-});
-
-function init() {
-  // 通过全局关键字进入插件
-  useEventBus(ENTER_GAME, (key: string) => {
-    const node = findNodeByKey(key, treeStore.data)
-    if (!node) {
-      // 处理边界情况
-      removeFeature(`game/${key}`)
-      Message.error('未找到对应游戏')
-      return
-    }
-    treeStore.selected = node
-  })
   mainStore.init()
-}
-
-function handleFeatureClick() {
-  if (gameStore.isFeature) {
-    gameStore.isFeature = false;
-    removeFeature(gameStore.featureKey);
-    Message.success("全局关键字已移除");
-  } else {
-    gameStore.isFeature = true;
-    setFeature({
-      code: gameStore.featureKey,
-      explain: "打开我的游戏",
-      platform: ["darwin", "win32", "linux"],
-      icon: "logo.png",
-      cmds: [gameStore.title],
-    });
-    Message.success("全局关键字已添加");
-  }
-}
+});
 
 </script>
 

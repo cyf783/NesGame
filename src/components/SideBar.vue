@@ -1,5 +1,11 @@
 <template>
   <div class="side-bar">
+    <a-input class="search" v-model="treeStore.searchKey" @keydown.esc="clearKeyword" placeholder="检索游戏名称"
+      allow-clear>
+      <template #prefix>
+        <icon-search />
+      </template>
+    </a-input>
     <div class="btn-list">
       <a-button title="添加游戏" @click="addFile(false)">
         <template #icon>
@@ -21,7 +27,7 @@
           <icon-edit />
         </template>
       </a-button>
-      <a-dropdown show-arrow :style="{ display: 'block' }" >
+      <a-dropdown show-arrow :style="{ display: 'block' }">
         <a-button title="备份恢复仓库">
           <template #icon>
             <icon-storage />
@@ -119,13 +125,9 @@
 </template>
 
 <script setup lang="ts">
-import { useEventBus } from '@/hooks/useEventBus'
 import { useTreeData } from '@/hooks/useTreeData'
 import { useTreeDrag } from '@/hooks/useTreeDrag'
 import { useGameStore, useTreeStore } from '@/store'
-import {
-  SESRCH_KEY,
-} from '@/common/symbol'
 import { collectAllParentKeys, findNodeByKey } from '@/utils/tree'
 
 const gameStore = useGameStore()
@@ -133,6 +135,14 @@ const treeStore = useTreeStore();
 
 const { addFile, addFolder, handleDelete, handleRename, handleBackup, handleRestore, handleReset } = useTreeData()
 const { drop } = useTreeDrag()
+
+/**
+ * 处理在搜索框中按下ESC的行为
+ * 清空搜索框
+ */
+function clearKeyword(ev: KeyboardEvent) {
+    treeStore.searchKey = ''
+}
 
 /**
  * 选中树中的节点时触发
@@ -173,10 +183,6 @@ watch(() => treeStore.selected, (newVal, oldVal) => {
 function toggleExpanded() {
   treeStore.expandedKeys = treeStore.expandedKeys.length ? [] : treeStore.allExpandedKeys
 }
-
-useEventBus(SESRCH_KEY, (key: string) => {
-  treeStore.searchKey = key
-})
 
 watch(() => treeStore.data, (newVal, oldVal) => {
   // 有变动就保存

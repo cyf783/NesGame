@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import type { Controller } from "nes-vue";
 import { getItem, setItem } from "@/utils";
 import { GAME_CONTROLER } from "@/utils/constant";
 
@@ -16,7 +15,7 @@ export const useControlerStore = defineStore("ControlerStore", {
       D: "KeyU",
       SELECT: "Space",
       START: "Enter",
-    } as Controller,
+    } ,
     p2: {
       UP: "ArrowUp",
       DOWN: "ArrowDown",
@@ -26,7 +25,7 @@ export const useControlerStore = defineStore("ControlerStore", {
       B: "Numpad1",
       C: "Numpad5",
       D: "Numpad4",
-    } as Controller,
+    } ,
     p0: {
       SAVE: "KeyO",
       PAUSE: "KeyP",

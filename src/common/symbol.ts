@@ -1,13 +1,4 @@
 /**
- * 侧栏分类树相关操作
- */
-export const SESRCH_KEY = Symbol("SESRCH_KEY"); // 搜索
-
-/**
- * 全局关键字
- */
-export const ENTER_GAME = Symbol("ENTER_GAME"); // 由关键字进入插件
-/**
  * 游戏
  */
 export const GAME_LOAD_RECORD = Symbol("GAME_LOAD_RECORD");

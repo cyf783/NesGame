@@ -15,11 +15,14 @@
         padding: 0;
         margin: 0;
       }
+      .ejs_small_screen .ejs_volume_parent,
       .ejs_big_screen .ejs_volume_parent {
-        display: none;
+        display: none !important;
       }
+      .ejs_small_screen .ejs_menu_bar,
       .ejs_big_screen .ejs_menu_bar {
         display: none !important;
+        pointer-events: none !important;
       }
       .ejs_loading_text {
         bottom: 49% !important;

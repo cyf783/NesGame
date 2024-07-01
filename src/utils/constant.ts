@@ -1,6 +1,7 @@
 export const GAME_LAST = "game/last";
 export const GAME_TREE_DATA = "game/tree_data";
 export const GAME_VOLUME = "game/volume";
+export const GAME_TRANSPARENT = "game/transparent";
 export const GAME_RECORD = "game/record/";
 export const GAME_CHEAT = "game/cheat/";
 export const GAME_RECORD_ATTACHMENT = "game/record/attachment/";

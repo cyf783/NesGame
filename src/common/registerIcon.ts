@@ -32,6 +32,8 @@ import {
   IconMute,
   IconHistory,
   IconStorage,
+  IconEye,
+  IconEyeInvisible,
 } from "@arco-design/web-vue/es/icon";
 
 const icons = [
@@ -39,6 +41,8 @@ const icons = [
   IconFolderAdd,
   IconDelete,
   IconEdit,
+  IconEye,
+  IconEyeInvisible,
   IconDoubleDown,
   IconDoubleUp,
   IconRecord,

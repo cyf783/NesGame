@@ -6,6 +6,7 @@ import {
   GAME_TREE_DATA,
   GAME_LAST,
   GAME_VOLUME,
+  GAME_TRANSPARENT,
 } from "@/utils/constant";
 import { useControlerStore } from "./controlerStore";
 
@@ -13,14 +14,17 @@ export const useMainStore = defineStore("MainStore", {
   state: () => ({
     volume: 80,
     lastVolume: 80,
+    transparent: 100,
     isReady: false,
-    isDetach: false,
+    isDetach: true,
     tips:"游戏加载中..."
   }),
   actions: {
     init() {
       const v = getItem(GAME_VOLUME);
       this.volume = v == 0 || v ? v : 80;
+      const t = getItem(GAME_TRANSPARENT);
+      this.transparent = t == 0 || t ? t : 100;
       const treeStore = useTreeStore();
       treeStore.init();
       const gameStore = useGameStore();
@@ -51,6 +55,9 @@ export const useMainStore = defineStore("MainStore", {
     },
     saveGain() {
       setItem(GAME_VOLUME, this.volume);
+    },
+    saveTransparent() {
+      setItem(GAME_TRANSPARENT, this.transparent);
     },
   },
 });

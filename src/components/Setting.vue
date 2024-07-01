@@ -62,7 +62,7 @@
       </a-space>
     </div>
     <div class="header">
-      <h3>其它</h3>
+      <h3>其它按键</h3>
     </div>
     <a-table :data="controlerStore.getP0Key" :pagination="false">
       <template #columns>

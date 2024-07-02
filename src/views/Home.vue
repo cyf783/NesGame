@@ -85,10 +85,11 @@
                 </a-button>
               </ATooltip>
               <ATooltip mini content="切换引擎" v-show="isElectron" v-if="gameStore.isNes">
-                <a-radio-group type="button" size="large" v-model="gameStore.core" class="core-type">
-                  <a-radio value="JSNES">JSNES</a-radio>
-                  <a-radio value="EmulatorJS">EmulatorJS</a-radio>
-                </a-radio-group>
+                <a-button class="menu-btn top-action" @click="handleChangeCore">
+                  <a-tag :color="gameStore.core === 'JSNES'?'orangered':'arcoblue'">
+                    {{gameStore.core === 'JSNES' ? '单核' : '多核'}}
+                  </a-tag>
+                </a-button>
               </ATooltip>
             </div>
           </a-layout-header>
@@ -139,6 +140,14 @@ watch(() => mainStore.alwaysOnTop, (newVal, oldVal) => {
 // 卸载时更新状态库
 onUnmounted(() => {
 })
+
+function handleChangeCore(){
+  if(gameStore.core === 'JSNES'){
+    gameStore.core = 'EmulatorJS'
+  }else{
+    gameStore.core = 'JSNES'
+  }
+}
 
 function volumeformatter(value: number) {
   return `音量${value}%`
@@ -291,18 +300,6 @@ onMounted(() => {
   border-top: 1px solid var(--line-color);
   overflow: hidden;
   padding: 0 0 0 20px;
-}
-
-.core-type {
-  background-color: var(--c-bg-color);
-
-  .arco-radio-button {
-    :deep(.arco-radio-button-content) {
-      line-height: 36px;
-      font-size: 10px;
-      padding: 0 5px;
-    }
-  }
 }
 
 .text-ellipsis {

@@ -169,8 +169,11 @@ function systemControlEvent(e: KeyboardEvent) {
 
 
 onMounted(() => {
-  window.preload.gamePause=()=>{
-    $emit(GAME_TOGGLE_PLAY,"pause");
+  try {
+    window.preload.gamePause=()=>{
+      $emit(GAME_TOGGLE_PLAY,"pause");
+    }
+  } catch (error) {
   }
   document.addEventListener('keypress', systemControlEvent)
   // 监听消息事件

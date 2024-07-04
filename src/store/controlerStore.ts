@@ -32,6 +32,7 @@ export const useControlerStore = defineStore("ControlerStore", {
       RESET: "KeyR",
       MUTE: "KeyV",
       ON_TOP: "KeyT",
+      LOAD_LAST: "KeyY"
     },
   }),
   getters: {
@@ -49,6 +50,9 @@ export const useControlerStore = defineStore("ControlerStore", {
     },
     getOnTopKey: (state) => {
       return conversion(state.p0.ON_TOP);
+    },
+    getLoadLastKey: (state) => {
+      return conversion(state.p0.LOAD_LAST);
     },
     getP1Key: (state) => {
       const res = [];
@@ -148,4 +152,5 @@ const keyboardNameMaps: Record<string, string> = {
   p0RESET: "重启",
   p0MUTE: "静音",
   p0ON_TOP: "置顶",
+  p0LOAD_LAST: "加载最近存档",
 };

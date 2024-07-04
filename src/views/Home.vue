@@ -84,9 +84,9 @@
                   <icon-history />
                 </a-button>
               </ATooltip>
-              <ATooltip mini content="切换引擎" v-show="isElectron" v-if="gameStore.isNes">
+              <ATooltip mini content="切换" v-show="isElectron" v-if="gameStore.isNes">
                 <a-button class="menu-btn top-action" @click="handleChangeCore">
-                  <a-tag :color="gameStore.core === 'JSNES'?'orangered':'arcoblue'">
+                  <a-tag :color="gameStore.core === 'JSNES'?'purple':'orangered'">
                     {{gameStore.core === 'JSNES' ? '单核' : '多核'}}
                   </a-tag>
                 </a-button>

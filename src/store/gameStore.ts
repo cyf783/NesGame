@@ -137,7 +137,7 @@ export const useGameStore = defineStore("GameStore", {
     saveRecord(data: Uint8Array, img: string, coreType: string) {
       return new Promise((resolve) => {
         const rid = "r_" + new Date().getTime();
-        this.records.push({
+        this.records.unshift({
           id: rid,
           title: `保存于 ${getCurrentTime()}`,
           core: coreType ? coreType : GAME_CORE_JSNES,
@@ -163,7 +163,24 @@ export const useGameStore = defineStore("GameStore", {
             if (td) {
               r.data = inflate(td);
               resolve(r);
+              return;
             }
+          }
+        }
+        resolve(null);
+      });
+    },
+    loadLastRecord() {
+      return new Promise<IGameRecord | null>((resolve) => {
+        if(this.records&&this.records.length>0){
+          const r = this.records[0];
+          const td = getAttachment(
+            GAME_RECORD_ATTACHMENT + this.id + "/" + r.id
+          );
+          if (td) {
+            r.data = inflate(td);
+            resolve(r);
+            return;
           }
         }
         resolve(null);

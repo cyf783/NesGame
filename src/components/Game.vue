@@ -11,7 +11,7 @@ import { ref } from 'vue'
 import { useControlerStore, useGameStore, useMainStore } from '@/store';
 import { Message } from '@arco-design/web-vue';
 import { $emit, useEventBus } from '@/hooks/useEventBus';
-import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, GAME_EMULATORJS_GAMEPAD, GAME_EMULATORJS_CHEAT, GAME_CHEAT_PARSE, GAME_CHEAT_DISABLE } from '@/common/symbol';
+import { GAME_TOGGLE_PLAY, GAME_RESET, GAME_SAVE_RECORD, GAME_LOAD_RECORD, GAME_EMULATORJS_GAMEPAD, GAME_EMULATORJS_CHEAT, GAME_CHEAT_PARSE, GAME_CHEAT_DISABLE, GAME_LOAD_LAST_RECORD } from '@/common/symbol';
 import { IGameHandler, IGameRecord } from '@/types';
 import { useNes } from '@/hooks/useNes';
 import { useEjs } from '@/hooks/useEjs';
@@ -129,15 +129,42 @@ useEventBus(GAME_EMULATORJS_CHEAT, () => {
   }
 })
 
-useEventBus(GAME_CHEAT_PARSE, (code:string) => {
+useEventBus(GAME_CHEAT_PARSE, (code: string) => {
   if (gameCoreHandler) {
     gameCoreHandler.cheatParse(code);
   }
 })
 
-useEventBus(GAME_CHEAT_DISABLE, (code:string) => {
+useEventBus(GAME_CHEAT_DISABLE, (code: string) => {
   if (gameCoreHandler) {
     gameCoreHandler.cheatDisable(code);
+  }
+})
+
+
+useEventBus(GAME_LOAD_LAST_RECORD, () => {
+  if (gameCoreHandler) {
+    gameStore.loadLastRecord().then((rec: IGameRecord | null) => {
+      if (rec) {
+        if (gameStore.lastCore != rec.core) {
+          gameStore.loading = true
+          gameStore.core = rec.core
+        }
+        if (!gameStore.loading) {
+          $emit(GAME_LOAD_RECORD, rec);
+        } else {
+          const cancel = watch(
+            () => gameStore.loading,
+            (val) => {
+              val ? null : $emit(GAME_LOAD_RECORD, rec);
+              cancel();
+            }
+          );
+        }
+      } else {
+        Message.warning("没有找到游戏记录");
+      }
+    })
   }
 })
 
@@ -162,6 +189,9 @@ function systemControlEvent(e: KeyboardEvent) {
     case controlerStore.p0.ON_TOP:
       mainStore.setOnTop()
       break
+    case controlerStore.p0.LOAD_LAST:
+      $emit(GAME_LOAD_LAST_RECORD);
+      break
     default:
       break
   }
@@ -170,8 +200,8 @@ function systemControlEvent(e: KeyboardEvent) {
 
 onMounted(() => {
   try {
-    window.preload.gamePause=()=>{
-      $emit(GAME_TOGGLE_PLAY,"pause");
+    window.preload.gamePause = () => {
+      $emit(GAME_TOGGLE_PLAY, "pause");
     }
   } catch (error) {
   }
@@ -194,6 +224,9 @@ onMounted(() => {
           break
         case controlerStore.p0.ON_TOP:
           mainStore.setOnTop()
+          break
+        case controlerStore.p0.LOAD_LAST:
+          $emit(GAME_LOAD_LAST_RECORD);
           break
         default:
           break

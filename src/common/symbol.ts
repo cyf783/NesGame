@@ -2,6 +2,7 @@
  * 游戏
  */
 export const GAME_LOAD_RECORD = Symbol("GAME_LOAD_RECORD");
+export const GAME_LOAD_LAST_RECORD = Symbol("GAME_LOAD_LAST_RECORD");
 export const GAME_SAVE_RECORD = Symbol("GAME_SAVE_RECORD");
 export const GAME_RESET = Symbol("GAME_RESET");
 export const GAME_STOP = Symbol("GAME_STOP");

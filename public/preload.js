@@ -33,6 +33,7 @@ window.exports = {
               webPreferences: {
                 devTools: utools.isDev(),
                 transparent: true,
+                webSecurity: false,
                 preload: "pld.js",
               },
             },

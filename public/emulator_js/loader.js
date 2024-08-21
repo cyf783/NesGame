@@ -7,7 +7,10 @@
         return new Promise(function (resolve, reject) {
             let script = document.createElement('script');
             script.src = function() {
-                if ('undefined' != typeof EJS_paths && typeof EJS_paths[file] === 'string') {
+                if (/^https?:\/\//.test(file)){
+                    return file;
+                }
+                else if ('undefined' != typeof EJS_paths && typeof EJS_paths[file] === 'string') {
                     return EJS_paths[file];
                 } else {
                     return scriptPath+file;
@@ -25,7 +28,9 @@
             let css = document.createElement('link');
             css.rel = 'stylesheet';
             css.href = function() {
-                if ('undefined' != typeof EJS_paths && typeof EJS_paths[file] === 'string') {
+                if (/^https?:\/\//.test(file)){
+                    return file;
+                } else if ('undefined' != typeof EJS_paths && typeof EJS_paths[file] === 'string') {
                     return EJS_paths[file];
                 } else {
                     return scriptPath+file;
@@ -69,6 +74,8 @@
         await loadScript('socket.io.min.js');
         await loadStyle('emulator.css');
     } else {
+        //await loadScript('https://cdn.emulatorjs.org/latest/data/emulator.min.js');
+        //await loadStyle('https://cdn.emulatorjs.org/latest/data/emulator.min.css');
         await loadScript('emulator.min.js');
         await loadStyle('emulator.min.css');
     }

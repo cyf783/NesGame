@@ -495,8 +495,8 @@ export function useTreeData() {
       title: `重置仓库`,
       cancelText: "取消",
       content: () => "重置后所有数据将丢失，是否继续？",
-      onBeforeOk: (done) => {
-        treeStore.reset();
+      onBeforeOk: async (done) => {
+        await treeStore.reset();
         Message.success("重置成功");
         done(true);
       },

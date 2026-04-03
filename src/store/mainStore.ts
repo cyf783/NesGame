@@ -21,13 +21,13 @@ export const useMainStore = defineStore("MainStore", {
     tips: "游戏加载中...",
   }),
   actions: {
-    init() {
+    async init() {
       const v = getItem(GAME_VOLUME);
       this.volume = v == 0 || v ? v : 80;
       const t = getItem(GAME_TRANSPARENT);
       this.transparent = t == 0 || t ? t : 100;
       const treeStore = useTreeStore();
-      treeStore.init();
+      await treeStore.init();
       const gameStore = useGameStore();
       gameStore.init();
       treeStore.selected = {
@@ -40,10 +40,10 @@ export const useMainStore = defineStore("MainStore", {
       controlerStore.init();
       this.isReady = true;
     },
-    reset() {
+    async reset() {
       removeItem(GAME_LAST);
       removeItem(GAME_TREE_DATA);
-      this.init();
+      await this.init();
     },
     mute() {
       if (this.volume) {

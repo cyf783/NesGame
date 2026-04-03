@@ -1,4 +1,4 @@
-import { GAME_DEFAULT, GAME_LIST } from "@/data/games";
+import { GAME_DEFAULT, GAME_REPO } from "@/data/games";
 import { ITreeBase, ITreeItem } from "@/types";
 import { getItem, setItem } from "@/utils";
 import { GAME_TREE_DATA } from "@/utils/constant";
@@ -44,39 +44,25 @@ export const useTreeStore = defineStore("TreeStore", {
     },
   },
   actions: {
-    init() {
+    async init() {
       const treeDataDb = getItem(GAME_TREE_DATA);
       if (treeDataDb) {
         this.data = treeDataDb;
       } else {
-        this.reset();
+        await this.reset();
       }
     },
-    reset() {
-      const _treeData: ITreeItem[] = [];
-      for (const key in GAME_LIST) {
-        if (GAME_LIST.hasOwnProperty(key)) {
-          const c = {
-            key: createKey(key),
-            title: key,
-            children: [] as ITreeItem[],
-          };
-          //@ts-ignore
-          for (let i = 0; i < GAME_LIST[key].length; i++) {
-            //@ts-ignore
-            const g = GAME_LIST[key][i];
-            c.children.push({
-              key: createKey(g[1]),
-              title: g[0],
-              path: g[1],
-              ext: GAME_DEFAULT.ext,
-            });
-          }
-          _treeData.push(c);
+    async reset() {
+      try {
+        const response = await fetch(GAME_REPO);
+        if (!response.ok) {
+          throw new Error('Failed to fetch game data');
         }
+        const data = await response.json();
+        this.restory(data);
+      } catch (error) {
+        console.error('Error resetting tree data:', error);
       }
-      this.data = _treeData;
-      this.saveDB();
     },
     restory(data: ITreeBase[]) {
       const loop = (data: ITreeBase[]): any => {

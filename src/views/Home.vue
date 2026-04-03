@@ -205,8 +205,8 @@ function handleKey() {
   });
 }
 
-onMounted(() => {
-  mainStore.init()
+onMounted(async () => {
+  await mainStore.init()
 });
 
 </script>

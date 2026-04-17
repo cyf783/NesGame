@@ -69,8 +69,8 @@ pnpm build
 | D | → 右 |
 | K | A 键 |
 | J | B 键 |
-| I | C 键（Select） |
-| U | D 键（Start） |
+| I | C 键 |
+| U | D 键 |
 | Space | Select |
 | Enter | Start |
 
@@ -138,6 +138,8 @@ src/
 ```ts
 export const GAME_REPO = "https://ghproxy.net/https://raw.githubusercontent.com/cyf783/nes-roms/master/_repo.json";
 ```
+
+仓库地址：[https://github.com/cyf783/nes-roms](https://github.com/cyf783/nes-roms)
 
 仓库数据格式为嵌套的树形结构：
 

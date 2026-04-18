@@ -1,6 +1,6 @@
 # 红白机 (FC/NES 模拟器)
 
-基于 [uTools](https://u.tools/) 的红白机（FC/NES）模拟器插件，支持在线游戏仓库、双模拟器核心、存档读档、金手指等功能。
+基于 [uTools](https://www.u-tools.cn/plugins/detail/%E7%BA%A2%E7%99%BD%E6%9C%BA/) 的红白机（FC/NES）模拟器插件，支持在线游戏仓库、双模拟器核心、存档读档、金手指等功能。
 
 ## 功能特性
 
